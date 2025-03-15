@@ -1,0 +1,6 @@
+@FOE.Maintainance_HostAddress = http://localhost:5202
+
+GET {{FOE.Maintainance_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
