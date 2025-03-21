@@ -30,10 +30,10 @@ namespace Presentaion
 
         //    return Ok(data);
         //}
-        [HttpGet("{id}",Name ="GetGateBasedOnRegionId")]
-        public IActionResult GetOne(int regionId, int id)
+        [HttpGet("{gateId}", Name ="GetGateBasedOnRegionId")]
+        public IActionResult GetOne(int regionId, int gateId)
         {
-           var data=  service.GateService.GetSpecificGate(regionId, id, false);
+           var data=  service.GateService.GetSpecificGate(regionId, gateId, false);
             return Ok(data);
         }
         [HttpPost]
@@ -42,6 +42,12 @@ namespace Presentaion
             var gate = await service.GateService.CreateNewGateInRegion(regionId, gateName,false);
             return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId,id=gate.Id}, gate);
         }
-    }
+        [HttpDelete("gateId")]
+		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
+		{
+			await service.GateService.DeleteGateAsync(regionId, gateId);
+			return NoContent();
+		}
+	}
 
 }

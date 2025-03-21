@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Contracts.Base;
 using Microsoft.Extensions.Logging;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.Services;
 using System.Net.Http.Headers;
 

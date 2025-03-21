@@ -48,4 +48,23 @@ namespace Core.Exceptions
         {
         }
     }
+	public class FailureNotFoundException : NotFoundException
+	{
+		public FailureNotFoundException(int id) : base($"no Failure exists with this id {id}")
+		{
+		}
+	}
+	public class StuffNotFoundException : NotFoundException
+	{
+		public StuffNotFoundException(int id) : base($"no Stuff exists with this id {id}")
+		{
+		}
+	}
+    public class DeviceFailureHistoryNotFoundException:NotFoundException
+    {
+		public DeviceFailureHistoryNotFoundException(int id) : base($"no DeviceFailureHistory exists with this id {id}")
+		{
+		}
+	}
+
 }

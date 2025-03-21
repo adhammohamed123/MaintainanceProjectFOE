@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Contracts.Base;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.Services;
 
 

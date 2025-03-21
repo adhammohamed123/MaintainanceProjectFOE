@@ -1,4 +1,4 @@
-﻿using Repository.Repository;
+﻿using Core.RepositoryContracts;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +16,10 @@ namespace Repository
         public async Task CreateNewGate(Gate gate)
         => await Create(gate);
 
-        public IQueryable<Gate> GetAllGates(int regionId, bool trackchanges)
+		public void DeleteGate(Gate gate)
+		=>SoftDelete(gate);
+
+		public IQueryable<Gate> GetAllGates(int regionId, bool trackchanges)
         => FindByCondition(g => g.RegionId.Equals(regionId), trackchanges);
 
        // public IQueryable<Gate> GetAllGatesInGeneral(bool trackchanges)

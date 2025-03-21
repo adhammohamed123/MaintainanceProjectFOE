@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -11,9 +12,11 @@ using Repository;
 namespace FOE.Maintainance.Migrations
 {
     [DbContext(typeof(FoeMaintainContext))]
-    partial class FoeMaintainContextModelSnapshot : ModelSnapshot
+    [Migration("20250318033826_alterDevicePropertiesToAllowNulls")]
+    partial class alterDevicePropertiesToAllowNulls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,10 +154,11 @@ namespace FOE.Maintainance.Migrations
                     b.Property<string>("LastModifiedUserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MaintainerId")
+                    b.Property<int>("MaintainerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReceiverID")
@@ -363,7 +367,9 @@ namespace FOE.Maintainance.Migrations
 
                     b.HasOne("Core.Entities.Stuff", "Maintainer")
                         .WithMany()
-                        .HasForeignKey("MaintainerId");
+                        .HasForeignKey("MaintainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Core.Entities.Stuff", "Receiver")
                         .WithMany()

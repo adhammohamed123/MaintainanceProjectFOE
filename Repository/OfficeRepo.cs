@@ -1,4 +1,4 @@
-﻿using Repository.Repository;
+﻿using Core.RepositoryContracts;
 using Core.Entities;
 
 namespace Repository
@@ -15,7 +15,10 @@ namespace Repository
             await Create(office);
         }
 
-        public IQueryable<Office> GetAll(int deptId, bool trackchanges)
+		public void DeleteOffice(Office office)
+		=>SoftDelete(office);
+
+		public IQueryable<Office> GetAll(int deptId, bool trackchanges)
         => FindByCondition(o => o.DepartmentId.Equals(deptId), trackchanges);
 
         public Office GetOfficeBasedOnId(int deptId, int officeId, bool trackchanges)

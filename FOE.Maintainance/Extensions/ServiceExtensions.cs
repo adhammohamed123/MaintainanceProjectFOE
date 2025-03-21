@@ -1,5 +1,5 @@
 ﻿using Contracts.Base;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.Services;
 using Core.LoggerService;
 using Microsoft.EntityFrameworkCore;

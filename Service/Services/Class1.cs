@@ -1,55 +1,31 @@
 ﻿using Core.Entities;
+using Core.Features;
 using Service.DTOs;
 namespace Service.Services
 {
 
-
-    public interface IOfficeService
-    {
-        IEnumerable<OfficeDto> GetAll(int regionId,int gateId, int deptId, bool trackchanges);
-        OfficeDto GetOfficeBasedOnId(int regionId, int gateId, int deptId, int officeId, bool trackchanges);
-
-        Task<OfficeDto> CreateNewOffice(int regionId, int gateId, int deptId,string officeName ,bool trackchanges);
-
-    }
-    public interface IDeviceService
-    {
-        IQueryable<DeviceDto> GetAllDevices(bool trackchanges);
-        DeviceDto GetDeviceByID(int id,bool trackchanges);
-    }
-
    
     public interface IMaintaninanceService
     {
-
-    }
-    public interface IFailureService
-    {
-
-    }
+		(IEnumerable<DeviceFailureHistoryDto> maintainRecords,MetaData metaData) GetAllAsync(MaintainanceRequestParameters maintainanceRequestParameters,bool trackchanges);
+        IEnumerable<DeviceFailureHistoryDto> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges);
+		DeviceFailureHistoryDto? GetByIdAsync(int id);
+		Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto);
+        (DeviceFailureHistoryDto dto,DeviceFailureHistory entity) GetDeviceFailureHistoryByIdForPartialUpdate(int id, bool trackchanges);
+        Task SavePartialUpdate(DeviceFailureHistoryDto dto,DeviceFailureHistory entity);
+	}
   
     
     
     public interface IStuffService
     {
-
-    }
+		IQueryable<NameWithIdentifierDto> GetAllStuff(bool trackchanges);
+		NameWithIdentifierDto? GetFromStuffById(int id, bool trackchanges);
+		Task<NameWithIdentifierDto> CreateStuff(string name);
+        Task DeleteStuff(int id,bool trackchanges);
+	}
     public interface ISpecializationService
     {
 
-    }
-
-
-    public interface IServiceManager
-    {
-        public IDeviceService DeviceService { get; }
-        public IDepartmentService DepartmentService { get; }
-        public IMaintaninanceService MaintaninanceService { get; }
-        public IOfficeService OfficeService { get; }
-        public IFailureService FailureService { get; }
-        public IGateService GateService { get; }
-        public IRegionService RegionService { get; }
-        public IStuffService StuffService { get; }
-        public ISpecializationService SpecializationService { get; }
     }
 }

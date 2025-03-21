@@ -1,4 +1,4 @@
-﻿using Repository.Repository;
+﻿using Core.RepositoryContracts;
 using Core.Entities;
 
 namespace Repository
@@ -18,7 +18,10 @@ namespace Repository
             await  Create(dept);
         }
 
-        public IQueryable<Department> GetAll(int gateId, bool trackchanges)
+        public void DeleteDepartment(Department department)
+        => SoftDelete(department);
+
+		public IQueryable<Department> GetAll(int gateId, bool trackchanges)
         => FindByCondition(d => d.GateId.Equals(gateId) , trackchanges);
 
         public Department GetDeptBasedOnId( int gateId, int deptId, bool trackchanges)

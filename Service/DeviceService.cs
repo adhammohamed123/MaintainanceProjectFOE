@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Contracts.Base;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.DTOs;
 using Service.Services;
+using Core.Entities;
 using Core.Exceptions;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using AutoMapper.QueryableExtensions;
+using Core.Features;
 namespace Service
 {
     public class DeviceService : IDeviceService
@@ -21,18 +23,65 @@ namespace Service
             this.logger = logger;
         }
 
-        public IQueryable<DeviceDto> GetAllDevices(bool trackchanges)
-        {
-            var DevicesAsEntities = repository.DeviceRepo.GetAllRegisteredDevices(trackchanges);
-            return DevicesAsEntities.ProjectTo<DeviceDto>(mapper.ConfigurationProvider);
-        }
+		public async Task<DeviceDto> CreateDevice(int regionId, int gateId, int deptId, int officeId, DeviceForCreationDto device, string UserID,bool trackchanges)
+		{
+			CheckParentExistance(regionId, gateId, deptId, officeId, trackchanges);
+			var deviceEntity = mapper.Map<Device>(device);
+			await  repository.DeviceRepo.CreateDevice(officeId, deviceEntity,UserID);
+	        await	  repository.SaveAsync();
+			return mapper.Map<DeviceDto>(deviceEntity);
+		}
 
-        public DeviceDto GetDeviceByID(int id, bool trackchanges)
-        {
-            var device = repository.DeviceRepo.GetById(id, trackchanges);
-            if (device == null)
-                throw new DeviceNotFoundException(id);
-            return mapper.Map<DeviceDto>(device);
-        }
-    }
+		public async Task DeleteDevice(int regionId, int gateId, int deptId, int officeId,int device, string UserID, bool trackchanges)
+		{
+			CheckParentExistance(regionId, gateId, deptId, officeId,trackchanges);
+			var deviceEntity = GetObjectAndCheckExistance(officeId, device, trackchanges);
+			repository.DeviceRepo.DeleteDevice(deviceEntity,UserID);
+			await repository.SaveAsync();
+		}
+
+		public (IEnumerable<DeviceDto>devices,MetaData metadata) GetAllDevices(DeviceRequestParameters deviceRequestParameters,bool trackchanges)
+		{
+			var devicesWithMeta= repository.DeviceRepo.GetAllDevices(deviceRequestParameters,trackchanges);
+			var devices = mapper.Map<IEnumerable<DeviceDto>>(devicesWithMeta);
+			return (devices, devicesWithMeta.metaData);
+		}
+		public IEnumerable<DeviceDto> GetAllRegisteredDevices(int regionId, int gateId, int deptId, int officeId, bool trackchanges)
+		{
+			CheckParentExistance(regionId, gateId, deptId, officeId, trackchanges);
+			var result = repository.DeviceRepo.GetAllRegisteredDevicesInSpecificOffice(officeId, trackchanges).ToList();
+			return mapper.Map<IEnumerable< DeviceDto>>(result);
+		}
+
+		public DeviceDto? GetById(int regionId, int gateId, int deptId, int officeId, int id, bool trackchanges)
+		{
+			CheckParentExistance(regionId, gateId, deptId, officeId, trackchanges);
+			var device = GetObjectAndCheckExistance(officeId, id, trackchanges);
+			return mapper.Map<DeviceDto>(device);
+		}
+		private (Region region,Gate gate,Department dept,Office office ) CheckParentExistance(int regionId, int gateId, int deptId, int officeId,bool trackchanges)
+		{
+			var region=repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
+			if (region == null)
+				throw new RegionNotFoundException(regionId);
+			var gate = repository.GateRepo.GetSpecificGate(regionId,gateId, trackchanges);
+			if (gate == null)
+				throw new GateNotFoundException(gateId);
+			var dept = repository.DepartmentRepo.GetDeptBasedOnId(gateId, deptId, trackchanges);
+			if (dept == null)
+				throw new DepartmentNotFoundException(deptId);
+			var office = repository.OfficeRepo.GetOfficeBasedOnId(deptId, officeId, trackchanges);
+			if (office == null)
+				throw new OfficeNotFoundException(officeId);
+			return (region, gate, dept, office);
+		}
+
+		private Device GetObjectAndCheckExistance(int officeId, int id, bool trackchanges)
+		{
+			var device = repository.DeviceRepo.GetById(officeId, id, trackchanges);
+			if (device == null)
+				throw new DeviceNotFoundException(id);
+			return device;
+		}
+	}
 }

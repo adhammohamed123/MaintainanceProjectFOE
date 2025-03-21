@@ -15,18 +15,16 @@ namespace Presentaion
             this.service = service;
         }
 
-
-
-        [HttpGet()]
+        [HttpGet]
         public IActionResult GetAllOfficesBasedOnDepartment(int regionId, int gateId, int deptId)
         {
             var data = service.OfficeService.GetAll(regionId, gateId, deptId, false);
             return Ok(data);
         }
-        [HttpGet("{id}",Name ="GetOffice")]
-        public IActionResult GetOne(int regionId, int gateId, int deptId, int id)
+        [HttpGet("{officeId}", Name ="GetOffice")]
+        public IActionResult GetOne(int regionId, int gateId, int deptId, int officeId)
         {
-            var data = service.OfficeService.GetOfficeBasedOnId(regionId,gateId,deptId, id, false);
+            var data = service.OfficeService.GetOfficeBasedOnId(regionId,gateId,deptId, officeId, false);
             return Ok(data);
         }
 
@@ -36,6 +34,12 @@ namespace Presentaion
             var result = await service.OfficeService.CreateNewOffice(regionId, gateId, deptId, officeName, false);
             return CreatedAtRoute("GetOffice", new { regionId, gateId, deptId, id = result.Id }, result);
         }
-    }
+        [HttpDelete("{officeId}")]
+		public async Task<IActionResult> Delete(int regionId, int gateId, int deptId, int officeId)
+		{
+			await service.OfficeService.DeleteOffice(regionId, gateId, deptId, officeId, true);
+			return NoContent();
+		}
+	}
 
 }

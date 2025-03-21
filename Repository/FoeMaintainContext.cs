@@ -59,7 +59,13 @@ namespace Repository
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
-            base.OnModelCreating(modelBuilder);
+   //         modelBuilder.Entity<Gate>()
+   //             .HasQueryFilter(Gate => !Gate.Region.IsDeleted);
+			//modelBuilder.Entity<Department>()
+			//   .HasQueryFilter(Department => !Department.Gate.IsDeleted);
+			//modelBuilder.Entity<Office>()
+			//   .HasQueryFilter(Office => !Office.Department.IsDeleted);
+			base.OnModelCreating(modelBuilder);
         }
 
     }

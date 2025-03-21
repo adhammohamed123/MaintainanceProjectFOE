@@ -34,7 +34,12 @@ namespace Presentaion
             var result = await service.DepartmentService.CreateNewDepartment(regionId, gateId, deptName, trackchanges: false);
             return CreatedAtRoute("GetDept", new { regionId, gateId, deptId = result.Id }, result);
         }
-
+        [HttpDelete("{deptId}")]
+        public async Task<IActionResult> Delete(int regionId, int gateId, int deptId)
+        {
+           await  service.DepartmentService.DeleteDepartment(regionId,gateId,deptId,trakchanages: true);
+            return NoContent();
+        }
 
     }
 }

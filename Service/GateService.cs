@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts.Base;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.DTOs;
 using Service.Services;
 using Core.Exceptions;
@@ -35,8 +35,11 @@ namespace Service
         }
 
         public IQueryable<GateDto> GetAllGates(int regionId, bool trackchanges)
-        => repository.GateRepo.GetAllGates(regionId,trackchanges).ProjectTo<GateDto>(mapper.ConfigurationProvider);
-
+        {
+            ChackParentExistance(regionId,  trackchanges);
+		  return 	repository.GateRepo.GetAllGates(regionId, trackchanges)
+                          .ProjectTo<GateDto>(mapper.ConfigurationProvider);
+        }
         //public IQueryable<GateDto> GetAllGatesInGeneral(bool trackchanges)
         // => repository.GateRepo.GetAllGatesInGeneral(trackchanges)
         //    .ProjectTo<GateDto>(mapper.ConfigurationProvider);
@@ -50,7 +53,16 @@ namespace Service
             return gatedto;
         }
 
-        private Gate CheckObjectExistanceAndParent(int regionId,int gateId, bool trackchanges)
+		public async Task DeleteGateAsync(int regionId, int gateId)
+		{
+			var gate = CheckObjectExistanceAndParent(regionId, gateId, trackchanges : true);
+		 	repository.GateRepo.DeleteGate(gate);
+            await repository.SaveAsync();
+		}
+
+
+
+		private Gate CheckObjectExistanceAndParent(int regionId,int gateId, bool trackchanges)
         {
             var region = ChackParentExistance(regionId, trackchanges);
 
@@ -68,9 +80,6 @@ namespace Service
             return IsRegionExists;
         }
 
-        public Task<GateDto> CreateNewGateInRegion(int regionId, string gateName)
-        {
-            throw new NotImplementedException();
-        }
-    }
+	
+	}
 }

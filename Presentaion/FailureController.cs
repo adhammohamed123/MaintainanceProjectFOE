@@ -1,0 +1,46 @@
+﻿using Service.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+
+namespace Presentaion
+{
+	[ApiController]
+	[Route("api/Failures")]
+	public class FailureController : ControllerBase
+	{
+		protected readonly IServiceManager service;
+
+		public FailureController(IServiceManager service)
+		{
+			this.service = service;
+		}
+
+		[HttpGet]
+		public IActionResult GetAlls()
+		{
+			var data = service.FailureService.GetAllFailures(trackchanges: false).ToList();
+			return Ok(data);
+		}
+
+		[HttpGet("{failureId}", Name = "GetFailureBasedOnId")]
+		public IActionResult GetFailure(int failureId)
+		{
+			var data = service.FailureService.GetById(failureId, trackchanges: false);
+			return Ok(data);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Create([FromBody] string name)
+		{
+			var newFailure = await service.FailureService.CreateFailure(name);
+			return CreatedAtRoute("GetFailureBasedOnId", new { id = newFailure.Id }, newFailure);
+		}
+		[HttpDelete("{failureId}")]
+		public async Task<IActionResult> Delete(int failureId)
+		{
+		 	await service.FailureService.DeleteFailure(failureId);
+			return NoContent();
+		}
+
+	}
+}

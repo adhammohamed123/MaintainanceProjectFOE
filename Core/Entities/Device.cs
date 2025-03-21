@@ -5,9 +5,9 @@ namespace Core.Entities
 {
     public class Device : FullAduitbaseModel
     {
-        public string DomainIDIfExists { get; set; }
-        public string Owner { get; set; }
-        public string PhoneNmber { get; set; }
+        public string? DomainIDIfExists { get; set; }
+        public string? Owner { get; set; }
+        public string? PhoneNmber { get; set; }
         public string Type { get; set; }
         public string MAC { get; set; }
         public string CPU { get; set; }

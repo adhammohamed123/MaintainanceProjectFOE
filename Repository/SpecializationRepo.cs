@@ -1,4 +1,4 @@
-﻿using Repository.Repository;
+﻿using Core.RepositoryContracts;
 using Core.Entities;
 
 namespace Repository

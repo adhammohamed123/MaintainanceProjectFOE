@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Contracts.Base;
-using Repository.Repository;
+using Core.RepositoryContracts;
+using Service.DTOs;
 using Service.Services;
-
+using Core.Entities;
+using AutoMapper.QueryableExtensions;
+using Core.Exceptions;
+using System.Threading.Tasks;
 
 namespace Service
 {
@@ -18,5 +22,39 @@ namespace Service
             this.mapper = mapper;
             this.logger = logger;
         }
-    }
+
+		public async Task<NameWithIdentifierDto> CreateFailure(string failureName)
+		{
+			var failure = new Failure() { Name = failureName };
+		    await	repository.FailureRepo.CreateFailure(failure);
+			await repository.SaveAsync();
+			return mapper.Map<NameWithIdentifierDto>(failure);
+
+		}
+
+		public async Task DeleteFailure(int id)
+		{
+			var failure = repository.FailureRepo.GetById(id, true);
+			if (failure == null)
+			{
+				throw new FailureNotFoundException(id);
+			}
+			repository.FailureRepo.DeleteFailure(failure);
+			await repository.SaveAsync();
+		}
+
+		public IQueryable<NameWithIdentifierDto> GetAllFailures(bool trackchanges)
+		=>repository.FailureRepo.GetAllFailures(trackchanges).ProjectTo<NameWithIdentifierDto>(mapper.ConfigurationProvider);
+		
+
+		public NameWithIdentifierDto GetById(int id, bool trackchanges)
+		{
+			var faliure=  repository.FailureRepo.GetById(id, trackchanges);
+			if (faliure == null)
+			{
+				throw new FailureNotFoundException( id);
+			}
+			return mapper.Map<NameWithIdentifierDto>(faliure);
+		}
+	}
 }

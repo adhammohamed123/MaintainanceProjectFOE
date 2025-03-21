@@ -3,10 +3,10 @@ using AutoMapper.QueryableExtensions;
 using Contracts.Base;
 using Core.Entities;
 using Core.Exceptions;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.DTOs;
 using Service.Services;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Service
 {
@@ -23,7 +23,7 @@ namespace Service
             this.logger = logger;
         }
 
-        public async Task<OfficeDto> CreateNewOffice(int regionId, int gateId, int deptId, string officeName,bool trackchanges)
+        public async Task<OfficeDto> CreateNewOffice(int regionId, int gateId, int deptId, string officeName, bool trackchanges)
         {
             CheckParentExistance(regionId, gateId, deptId, trackchanges);
             var office = new Office() { Name = officeName };
@@ -31,6 +31,14 @@ namespace Service
             await repository.SaveAsync();
             return mapper.Map<OfficeDto>(office);
         }
+
+        public async Task DeleteOffice(int regionId, int gateId, int deptId, int officeId, bool trackchanges)
+        {
+            CheckParentExistance(regionId, gateId, deptId, trackchanges);
+           var office=  GetObjectAndCheckExistance(deptId, officeId, trackchanges);
+		  	repository.OfficeRepo.DeleteOffice(office);
+		   await repository.SaveAsync();
+		}
 
         public IEnumerable<OfficeDto> GetAll(int regionId, int gateId, int deptId, bool trackchanges)
         {
@@ -49,22 +57,29 @@ namespace Service
             return mapper.Map<OfficeDto>(office);
         }
 
-        private (Region region,Gate gate,Department dept) CheckParentExistance( int regionId,int gateId,int deptId,bool trackchanges)
+        private (Region region, Gate gate, Department dept) CheckParentExistance(int regionId, int gateId, int deptId, bool trackchanges)
         {
-            var region = repository.RegionRepo.GetRegionBasedOnId(regionId,trackchanges);
+            var region = repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
             if (region == null)
                 throw new RegionNotFoundException(regionId);
-          
-            var gate = repository.GateRepo.GetSpecificGate(regionId,gateId, trackchanges);
+
+            var gate = repository.GateRepo.GetSpecificGate(regionId, gateId, trackchanges);
             if (gate == null)
                 throw new GateNotFoundException(gateId);
 
             var dept = repository.DepartmentRepo.GetDeptBasedOnId(gateId, deptId, trackchanges);
-          
-            if (dept==null)
-             throw new DepartmentNotFoundException(deptId);
-            
-            return (region,gate,dept);
+
+            if (dept == null)
+                throw new DepartmentNotFoundException(deptId);
+
+            return (region, gate, dept);
         }
-    }
+        private Office GetObjectAndCheckExistance(int deptId, int officeId, bool trackchanges)
+        {
+            var office = repository.OfficeRepo.GetOfficeBasedOnId(deptId, officeId, trackchanges);
+            if (office == null)
+                throw new OfficeNotFoundException(officeId);
+            return office;
+        }
+    } 
 }

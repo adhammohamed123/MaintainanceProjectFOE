@@ -1,4 +1,4 @@
-﻿using   Repository.Repository;
+﻿using   Core.RepositoryContracts;
 using System.Diagnostics;
 
 namespace Repository

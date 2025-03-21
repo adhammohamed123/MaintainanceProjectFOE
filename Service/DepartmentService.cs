@@ -4,7 +4,7 @@ using Core.Entities;
 using Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
-using Repository.Repository;
+using Core.RepositoryContracts;
 using Service.DTOs;
 using Service.Services;
 using System.Security.Cryptography;
@@ -32,7 +32,15 @@ namespace Service
             return mapper.Map<DepartmentDto>(dept);
         }
 
-        public IEnumerable<DepartmentDto> GetAllDepartments(int regionId ,int gateId, bool trakchanages)
+		public async Task DeleteDepartment(int regionId, int gateId, int deptId, bool trakchanages)
+		{
+			CheckParentExistance(regionId, gateId, trakchanages);
+           var dept=   GetObjectAndCheckExistance(gateId, deptId,trakchanages);
+            repository.DepartmentRepo.DeleteDepartment(dept);
+            await repository.SaveAsync();
+		}
+
+		public IEnumerable<DepartmentDto> GetAllDepartments(int regionId ,int gateId, bool trakchanages)
         {
             CheckParentExistance( regionId,gateId, trakchanages);
             var depts=  repository.DepartmentRepo.GetAll( gateId, trakchanages);
@@ -42,7 +50,7 @@ namespace Service
         public DepartmentDto GetDept(int regionId ,int gateId, int deptId, bool trakchanages)
         {
             CheckParentExistance(regionId ,gateId, trakchanages);
-            var dept=  GetObjectAndCheckExistance(regionId,gateId, deptId, trakchanages);
+            var dept=  GetObjectAndCheckExistance(gateId, deptId, trakchanages);
             return mapper.Map<DepartmentDto>(dept);
         }
 
@@ -57,7 +65,7 @@ namespace Service
                 throw new GateNotFoundException(gateId);
             return (region:region,gate:gate);
         }
-        private Department GetObjectAndCheckExistance(int regionId ,int gateId, int id, bool trackObject)
+        private Department GetObjectAndCheckExistance(int gateId, int id, bool trackObject)
         {
             var deptExists = repository.DepartmentRepo.GetDeptBasedOnId( gateId, id, trackObject);
 

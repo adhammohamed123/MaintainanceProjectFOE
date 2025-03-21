@@ -12,8 +12,8 @@ namespace Core.Entities
         public ICollection<Failure> Failures { get; set; } = new HashSet<Failure>();
 
         [ForeignKey(nameof(Maintainer))]
-        public int MaintainerId { get; set; }
-        public Stuff Maintainer { get; set; }
+        public int? MaintainerId { get; set; }
+        public Stuff? Maintainer { get; set; }
 
         [ForeignKey(nameof(Receiver))]
         public int ReceiverID { get; set; }
@@ -23,7 +23,7 @@ namespace Core.Entities
         public string DelievryPhoneNumber { get; set; }
 
        
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public bool IsProblemSolved { get; set; }
 
         public bool IsDeliverd { get; set; }
