@@ -21580,3 +21580,28 @@
 2025-03-21 13:16:03.2501 Debug Logger Core.LoggerService.LoggerManager [Warn] => logfile
 2025-03-21 13:16:03.2501 Debug Logger Core.LoggerService.LoggerManager [Error] => logfile
 2025-03-21 13:16:03.2501 Debug Logger Core.LoggerService.LoggerManager [Fatal] => logfile
+2025-03-21 13:23:41.5139 Info AppDomain Shutting down. LogFactory closing...
+2025-03-21 13:23:41.5139 Debug Stop watching file-filter 'nlog.config' in directory: H:\GitHub\MaintainanceProjectFOE\FOE.Maintainance
+2025-03-21 13:23:41.5171 Trace Flushing all 1 targets...
+2025-03-21 13:23:41.5171 Trace ForEachItemInParallel() 1 items
+2025-03-21 13:23:41.5171 Trace FileTarget(Name=logfile): FlushAsync
+2025-03-21 13:23:41.5171 Trace Continuation invoked: 
+2025-03-21 13:23:41.5171 Trace Parallel task completed. 0 items remaining
+2025-03-21 13:23:41.5171 Debug Flush completed
+2025-03-21 13:23:41.5171 Trace FileTarget(Name=logfile): FlushAsync Done
+2025-03-21 13:23:41.5171 Debug Closing logging configuration...
+2025-03-21 13:23:41.5171 Trace Closing FileTarget(Name=logfile)
+2025-03-21 13:23:41.5171 Debug FileTarget(Name=logfile): Closing...
+2025-03-21 13:23:41.5171 Debug FileTarget(Name=logfile): Closed.
+2025-03-21 13:23:41.5171 Trace Closing .\logs\${shortdate}_logfile.txt
+2025-03-21 13:23:41.5171 Trace Closing Layout Renderer: ${literal}
+2025-03-21 13:23:41.5171 Trace Closing Layout Renderer: ${shortdate}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${literal}
+2025-03-21 13:23:41.5319 Trace Closing ${longdate} ${level:uppercase=true} ${message}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${longdate}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${literal}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${level}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${literal}
+2025-03-21 13:23:41.5319 Trace Closing Layout Renderer: ${message}
+2025-03-21 13:23:41.5319 Debug Finished closing logging configuration.
+2025-03-21 13:23:41.5319 Info LogFactory has been closed.
