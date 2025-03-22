@@ -36,7 +36,7 @@ namespace Presentaion
         public async Task<IActionResult> Create([FromBody] string name)
         {
            var newRegion=  await service.RegionService.CreateNewRegionAsync(name);
-            return CreatedAtRoute("GetRegionBasedOnId", new { id = newRegion.Id }, newRegion);
+            return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
         }
         [HttpDelete("{regionId}")]
 		public async Task<IActionResult> Delete(int regionId)

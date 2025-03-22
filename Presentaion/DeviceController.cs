@@ -50,7 +50,7 @@ namespace Presentaion
 
 			// we should pass logged in user id here 
 			var result = await service.DeviceService.CreateDevice(regionId, gateId, deptId, officeId, deviceForCreationDto, "UserID", false);
-			return CreatedAtRoute("Getdevice", new { regionId, gateId, deptId, id = result.Id }, result);
+			return CreatedAtRoute("Getdevice", new { regionId, gateId, deptId, deviceId = result.Id }, result);
 		}
 		[HttpDelete("{deviceId}")]
 		public async Task<IActionResult> Delete(int regionId, int gateId, int deptId, int officeId, int deviceId)

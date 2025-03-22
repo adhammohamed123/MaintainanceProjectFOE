@@ -33,7 +33,7 @@ namespace Presentaion
 		public async Task<IActionResult> Create([FromBody] string name)
 		{
 			var newFailure = await service.FailureService.CreateFailure(name);
-			return CreatedAtRoute("GetFailureBasedOnId", new { id = newFailure.Id }, newFailure);
+			return CreatedAtRoute("GetFailureBasedOnId", new { failureId = newFailure.Id }, newFailure);
 		}
 		[HttpDelete("{failureId}")]
 		public async Task<IActionResult> Delete(int failureId)

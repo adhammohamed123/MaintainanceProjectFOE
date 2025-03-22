@@ -40,7 +40,7 @@ namespace Presentaion
         public async Task<IActionResult> CreateNewGate(int regionId,[FromBody]string gateName)
         {
             var gate = await service.GateService.CreateNewGateInRegion(regionId, gateName,false);
-            return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId,id=gate.Id}, gate);
+            return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
         }
         [HttpDelete("gateId")]
 		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
