@@ -23,11 +23,12 @@ namespace Service
             this.logger = logger;
         }
 
-		public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto)
+		public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto, string userId)
 		{
 			var entity = mapper.Map<DeviceFailureHistory>(dto);
-			entity.CreatedByUserId = "UserID";
-			await repository.MaintaninanceRepo.RegisterNew(entity,dto.FailureIds);
+			entity.CreatedByUserId = userId;
+			entity.ReceiverID=userId;
+            await repository.MaintaninanceRepo.RegisterNew(entity,dto.FailureIds);
 			await repository.SaveAsync();
 			return mapper.Map<DeviceFailureHistoryDto>(entity);
 		}
@@ -59,14 +60,17 @@ namespace Service
 			var entity=repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, trackchanges);
 			if (entity == null)
 				throw new DeviceFailureHistoryNotFoundException(id);
-			var dto= mapper.Map<DeviceFailureHistoryDto>(entity);
+			
+            var dto= mapper.Map<DeviceFailureHistoryDto>(entity);
 			return (dto, entity);
 		}
 
-		public async Task SavePartialUpdate(DeviceFailureHistoryDto dto, DeviceFailureHistory entity)
+		public async Task SavePartialUpdate(DeviceFailureHistoryDto dto, DeviceFailureHistory entity,string UserId)
 		{
 			mapper.Map(dto,entity);
-			await repository.SaveAsync();
+			entity.MaintainerId = UserId;
+            entity.LastModifiedUserId = UserId;
+            await repository.SaveAsync();
 		}
 	}
 }

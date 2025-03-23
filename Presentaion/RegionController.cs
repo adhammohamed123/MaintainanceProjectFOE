@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace Presentaion
 {
     [ApiController]
     [Route("api/Regions")]
+    [Authorize]
     public class RegionController : ControllerBase
     {
         protected  readonly IServiceManager service;
@@ -32,12 +34,14 @@ namespace Presentaion
             return Ok(data);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] string name)
         {
            var newRegion=  await service.RegionService.CreateNewRegionAsync(name);
             return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
         }
+        [Authorize(Roles= "Admin")]
         [HttpDelete("{regionId}")]
 		public async Task<IActionResult> Delete(int regionId)
 		{

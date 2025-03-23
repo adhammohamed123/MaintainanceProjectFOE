@@ -3,6 +3,7 @@ using FOE.Maintainance.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,16 +18,45 @@ builder.Services.AddControllers(cofig =>
 })
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 
+builder.Services.AddAuthentication();
 builder.Services
 .AddAutoMapper(typeof(Program))
 .ConfigureLogger()
 .ConfigureDbContext(builder.Configuration)
 .ConfigureRepositoryManager()
-.ConfigureServiceManager();
+.ConfigureServiceManager()
+.ConfigureIdentity()
+.ConfigureJWT(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(s =>
+{
+    s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Place to add JWT with Bearer",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+      s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+        {
+        new OpenApiSecurityScheme
+        {
+        Reference = new OpenApiReference
+        {
+        Type = ReferenceType.SecurityScheme,
+        Id = "Bearer"
+      
+        },
+        Name = "Bearer",
+        },
+        new List<string>()
+        }
+        });
+});
 
 var app = builder.Build();
 
@@ -40,7 +70,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

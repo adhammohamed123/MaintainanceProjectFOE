@@ -1,11 +1,13 @@
 ﻿using Contracts.Base;
 using Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Repository
 {
-    public class FoeMaintainContext:DbContext
+    public class FoeMaintainContext:IdentityDbContext<User>
     {
 
         public DbSet<Department>  Departments { get; set; }
@@ -16,7 +18,7 @@ namespace Repository
         public DbSet<Office> Offices { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<Specialization> Specializations { get; set; }
-        public DbSet<Stuff> Stuffs { get; set; }
+       
 
 
 
@@ -48,6 +50,9 @@ namespace Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             // Apply global query filter to all entities implementing ISoftDeletedModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
@@ -59,13 +64,7 @@ namespace Repository
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
-   //         modelBuilder.Entity<Gate>()
-   //             .HasQueryFilter(Gate => !Gate.Region.IsDeleted);
-			//modelBuilder.Entity<Department>()
-			//   .HasQueryFilter(Department => !Department.Gate.IsDeleted);
-			//modelBuilder.Entity<Office>()
-			//   .HasQueryFilter(Office => !Office.Department.IsDeleted);
-			base.OnModelCreating(modelBuilder);
+  
         }
 
     }

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Core.Entities;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
+    [Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates")]
     public class GateController : ControllerBase
@@ -36,12 +38,14 @@ namespace Presentaion
            var data=  service.GateService.GetSpecificGate(regionId, gateId, false);
             return Ok(data);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateNewGate(int regionId,[FromBody]string gateName)
         {
             var gate = await service.GateService.CreateNewGateInRegion(regionId, gateName,false);
             return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("gateId")]
 		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
 		{

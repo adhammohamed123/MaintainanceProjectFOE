@@ -4,9 +4,13 @@ using Service.DTOs;
 using Microsoft.AspNetCore.JsonPatch;
 using Core.Features;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Presentaion
 {
+	[Authorize]
 	[Route("api/maintenance")]
 	[ApiController]
 	public class DeviceFailureHistoryController : ControllerBase
@@ -45,16 +49,20 @@ namespace Presentaion
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] DeviceFailureHistoryForCreationDto dto)
 		{
-			var created = await _service.MaintaninanceService.CreateAsync(dto);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var created = await _service.MaintaninanceService.CreateAsync(dto,userId);
 			return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 		}
 
 		[HttpPatch("{id}")]
 		public async Task<IActionResult> Update(int id ,[FromBody] JsonPatchDocument<DeviceFailureHistoryDto> dto)
-		{
-			var result= _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
+        {
+		 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			
+            var result= _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
 			dto.ApplyTo(result.dto);
-			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity);
+			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity,userId);
 			return NoContent();
 		}
 

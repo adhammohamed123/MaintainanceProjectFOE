@@ -7,12 +7,14 @@ using Core.Entities;
 using Azure;
 using Core.Features;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Presentaion
 {
 
-
-	[ApiController]
+	[Authorize]
+    [ApiController]
 	[Route("api/Regions/{regionId}/Gates/{gateId}/Departments/{deptId}/offices/{officeId}/Devices")]
 	public class DeviceController : ControllerBase
 	{
@@ -47,16 +49,18 @@ namespace Presentaion
 		[HttpPost]
 		public async Task<IActionResult> Create(int regionId, int gateId, int deptId, int officeId, [FromBody] DeviceForCreationDto deviceForCreationDto)
 		{
-
-			// we should pass logged in user id here 
-			var result = await service.DeviceService.CreateDevice(regionId, gateId, deptId, officeId, deviceForCreationDto, "UserID", false);
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // we should pass logged in user id here 
+            var result = await service.DeviceService.CreateDevice(regionId, gateId, deptId, officeId, deviceForCreationDto, userId, false);
 			return CreatedAtRoute("Getdevice", new { regionId, gateId, deptId, deviceId = result.Id }, result);
 		}
-		[HttpDelete("{deviceId}")]
+		[Authorize(Roles = "Admin")]
+        [HttpDelete("{deviceId}")]
 		public async Task<IActionResult> Delete(int regionId, int gateId, int deptId, int officeId, int deviceId)
 		{
-			// we should pass logged in user id here 
-			await service.DeviceService.DeleteDevice(regionId, gateId, deptId, officeId, deviceId, "userID", true);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // we should pass logged in user id here 
+            await service.DeviceService.DeleteDevice(regionId, gateId, deptId, officeId, deviceId, userId, true);
 			return NoContent();
 		}
 	}

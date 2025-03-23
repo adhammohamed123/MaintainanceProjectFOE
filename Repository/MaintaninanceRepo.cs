@@ -2,6 +2,7 @@
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Core.Features;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -16,8 +17,8 @@ namespace Repository
 			//-->		
 			var items =FindAll(trackchanges).Include(h => h.Failures)
 				.Search(maintainanceRequestParameters.SearchTerm)
-				.OrderByDescending(x => x.LastModifiedDate?? x.CreatedDate)
-				.ToList();
+				.Sort(maintainanceRequestParameters.OrderBy)
+                .ToList();
 			return PagedList<DeviceFailureHistory>.ToPagedList(items, maintainanceRequestParameters.PageNumber, maintainanceRequestParameters.PageSize);
 		}
 		public IQueryable<DeviceFailureHistory> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
@@ -32,17 +33,6 @@ namespace Repository
 			var failures = await context.Failures.Where(f => failureIds.Contains(f.Id)).ToListAsync();
 			deviceFailureHistory.Failures = failures;
 			await Create(deviceFailureHistory);
-		}
-	}
-	public static class MaintainanceRepoExtensions
-	{
-		public static IQueryable<DeviceFailureHistory> Search(this IQueryable<DeviceFailureHistory> query, string? serachTerm)
-		{
-			if (!string.IsNullOrWhiteSpace(serachTerm))
-			{
-				return query.Where(x => x.Delievry.Contains(serachTerm));
-			}
-			return query;
 		}
 	}
 

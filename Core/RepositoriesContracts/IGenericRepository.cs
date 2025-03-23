@@ -39,12 +39,12 @@ namespace Core.RepositoryContracts
 
 
 
-	public interface IStuffRepo
+	public interface IUserRepo
     {
-	    IQueryable<Stuff> GetAllStuff(bool trackchanges);
-	    Stuff? GetFromStuffById(int id, bool trackchanges);
-        Task CreateStuff(Stuff stuff);  
-        void DeleteStuff(Stuff stuff);
+	    IQueryable<User> GetAllUser(bool trackchanges);
+	    User? GetFromUserById(string id, bool trackchanges);
+        Task CreateUser(User User);  
+        void DeleteUser(User User);
 	}
     public interface ISpecializationRepo
     {

@@ -9,7 +9,7 @@
         public IFailureRepo FailureRepo { get;}
         public IGateRepo  GateRepo { get;  }
         public IRegionRepo RegionRepo { get; }
-        public IStuffRepo StuffRepo { get;}
+        public IUserRepo UserRepo { get;}
         public ISpecializationRepo SpecializationRepo { get;}
 
         public Task SaveAsync();

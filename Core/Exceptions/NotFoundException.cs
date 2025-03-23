@@ -54,9 +54,9 @@ namespace Core.Exceptions
 		{
 		}
 	}
-	public class StuffNotFoundException : NotFoundException
+	public class UserNotFoundException : NotFoundException
 	{
-		public StuffNotFoundException(int id) : base($"no Stuff exists with this id {id}")
+		public UserNotFoundException(string id) : base($"no User exists with this id {id}")
 		{
 		}
 	}

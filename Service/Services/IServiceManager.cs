@@ -9,7 +9,7 @@
         public IFailureService FailureService { get; }
         public IGateService GateService { get; }
         public IRegionService RegionService { get; }
-        public IStuffService StuffService { get; }
+        public IUserService UserService { get; }
         public ISpecializationService SpecializationService { get; }
     }
 }

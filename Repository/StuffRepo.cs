@@ -4,22 +4,22 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class StuffRepo : BaseRepository<Stuff>, IStuffRepo
+    public class UserRepo : BaseRepository<User>, IUserRepo
     {
-        public StuffRepo(FoeMaintainContext context) : base(context)
+        public UserRepo(FoeMaintainContext context) : base(context)
         {
         }
 
-		public async Task CreateStuff(Stuff stuff)
-		=> await Create(stuff);
+		public async Task CreateUser(User User)
+		=> await Create(User);
 
-		public void DeleteStuff(Stuff stuff)
-		=>SoftDelete(stuff);
+		public void DeleteUser(User User)
+		=>SoftDelete(User);
 
-		public IQueryable<Stuff> GetAllStuff(bool trackchanges)
+		public IQueryable<User> GetAllUser(bool trackchanges)
 		=>FindAll(trackchanges);
 
-		public Stuff? GetFromStuffById(int id, bool trackchanges)
-		=> FindByCondition(s => s.Id == id, trackchanges).SingleOrDefault();
+		public User? GetFromUserById(string id, bool trackchanges)
+		=> FindByCondition(s => s.Id.Equals(id), trackchanges).SingleOrDefault();
 	}
 }

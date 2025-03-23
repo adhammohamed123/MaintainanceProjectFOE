@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using Core.RepositoryContracts;
 using Service.Services;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Identity;
+using Core.Entities;
+using Microsoft.Extensions.Configuration;
 
 
 namespace Service
@@ -19,11 +22,11 @@ namespace Service
         private Lazy<IFailureService> _FailureService;
         private Lazy<IGateService> _GateService;
         private Lazy<IRegionService> _RegionService;
-        private Lazy<IStuffService> _StuffService;
+        private Lazy<IUserService> _UserService;
         private Lazy<ISpecializationService> _SpecializationService;
 
-        public ServiceManager(IRepositoryManager repositoryManager,IMapper mapper,ILoggerManager logger)
-        {
+        public ServiceManager(IRepositoryManager repositoryManager,IMapper mapper,ILoggerManager logger,UserManager<User> userManager,IConfiguration configuration)
+        { 
             _DepartmentService = new Lazy<IDepartmentService>(() => new DepartmentService(repositoryManager, mapper,logger));
             _DeviceService = new Lazy<IDeviceService>(() => new DeviceService(repositoryManager, mapper, logger));
             _MaintaninanceService = new Lazy<IMaintaninanceService>(() => new MaintaninanceService(repositoryManager, mapper,logger));
@@ -31,7 +34,7 @@ namespace Service
             _FailureService = new Lazy<IFailureService>(() => new FailureService(repositoryManager, mapper,logger));
             _GateService = new Lazy<IGateService>(() => new GateService(repositoryManager, mapper,logger));
             _RegionService = new Lazy<IRegionService>(() => new RegionService(repositoryManager, mapper,logger));
-            _StuffService = new Lazy<IStuffService>(() => new StuffService(repositoryManager, mapper,logger));
+            _UserService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper,logger,userManager,configuration));
             _SpecializationService = new Lazy<ISpecializationService>(() => new SpecializationService(repositoryManager, mapper,logger));
         }
 
@@ -43,7 +46,7 @@ namespace Service
         public IFailureService FailureService => _FailureService.Value;
         public IGateService GateService => _GateService.Value;
         public IRegionService RegionService => _RegionService.Value;
-        public IStuffService StuffService => _StuffService.Value;
+        public IUserService UserService => _UserService.Value;
         public ISpecializationService SpecializationService => _SpecializationService.Value;
     }
 }

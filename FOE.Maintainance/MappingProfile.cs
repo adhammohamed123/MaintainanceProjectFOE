@@ -18,6 +18,9 @@ public class MappingProfile:Profile
              .ForMember(dest => dest.Failures, opt => opt.MapFrom(src => src.Failures.Select(f => f.Name)));
 		CreateMap<DeviceFailureHistoryDto, DeviceFailureHistory>().ForMember(d=>d.Failures, opt => opt.Ignore());
 		CreateMap<DeviceFailureHistoryForCreationDto, DeviceFailureHistory>();
-			
-	}
+        CreateMap<UserForRegistrationDto, User>();
+       
+
+
+    }
 }

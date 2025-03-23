@@ -12,12 +12,12 @@ namespace Core.Entities
         public ICollection<Failure> Failures { get; set; } = new HashSet<Failure>();
 
         [ForeignKey(nameof(Maintainer))]
-        public int? MaintainerId { get; set; }
-        public Stuff? Maintainer { get; set; }
+        public string? MaintainerId { get; set; }
+        public User? Maintainer { get; set; }
 
         [ForeignKey(nameof(Receiver))]
-        public int ReceiverID { get; set; }
-        public Stuff Receiver { get; set; }
+        public string ReceiverID { get; set; }
+        public User Receiver { get; set; }
 
         public string Delievry { get; set; }
         public string DelievryPhoneNumber { get; set; }

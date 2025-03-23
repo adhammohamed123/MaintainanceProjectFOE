@@ -17,13 +17,14 @@ namespace Core.Features
 
 		const int maxPageSize = 50;
 		private int _pageSize = 10;
-	}
+        public string? OrderBy { get; set; }
+    }
 	public class DeviceRequestParameters : RequestParameters
 	{
-		public string? RegionName { get; set; }
-		public string? GateName { get; set; }
-		public string? DeptName { get; set; }
-		public string? OfficeName { get; set; }
+		public int? RegionId { get; set; }
+		public int? GateId { get; set; }
+		public int? DeptId { get; set; }
+		public int? OfficeId { get; set; }
 		public string? SearchTerm { get; set; }
 	}
 	public class MaintainanceRequestParameters : RequestParameters

@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Service.DTOs
@@ -37,7 +38,6 @@ namespace Service.DTOs
 	public class DeviceFailureHistoryForCreationDto
 	{
 		public int DeviceId { get; set; }
-		public int ReceiverID { get; set; }
 		public List<int> FailureIds { get; set; } = new();
 		public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
@@ -48,12 +48,12 @@ namespace Service.DTOs
 	{
 		public int Id { get; set; }
 		public int DeviceId { get; set; }
-		public int ReceiverID { get; set; }
+		public string ReceiverID { get; set; }
 		public List<string> Failures { get; set; } = new();
 		public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
 		public string? Notes { get; set; }
-		public int? MaintainerId { get; set; }
+		public string? MaintainerId { get; set; }
 		public bool IsProblemSolved { get; set; }
 		public bool IsDeliverd { get; set; }
 		public string CreatedByUserId { get; set; }
@@ -62,6 +62,27 @@ namespace Service.DTOs
 		public DateTime? LastModifiedDate { get; set; }
 		public bool IsDeleted { get; set; }
 	}
-
+    public record UserForRegistrationDto
+    {
+        [Required(ErrorMessage = "Name is required")]
+        public string Name { get; init; }
+        [Required(ErrorMessage = "Username is required")]
+        public string? UserName { get; init; }
+        [Required(ErrorMessage = "Password is required")]
+        public string Password { get; init; }
+		[Compare(nameof(Password), ErrorMessage = "Passwords do not match")]
+        public string ConfirmPass { get; set; }
+        public string? Email { get; init; }
+        public string? PhoneNumber { get; init; }
+        public ICollection<string>? Roles { get; init; }
+    }
+    public record UserForAuthenticationDto
+    {
+        [Required(ErrorMessage = "User name is required")]
+        public string? UserName { get; init; }
+        [Required(ErrorMessage = "Password name is required")]
+        public string? Password { get; init; }
+    }
+    public record TokenDto(string AccessToken, string RefreshToken);
 
 }
