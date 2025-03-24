@@ -19,7 +19,7 @@ builder.Services.AddControllers(cofig =>
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 
 builder.Services.AddAuthentication();
-builder.Services
+builder.Services.ConfigureCORS()
 .AddAutoMapper(typeof(Program))
 .ConfigureLogger()
 .ConfigureDbContext(builder.Configuration)
@@ -70,6 +70,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

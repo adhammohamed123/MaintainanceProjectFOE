@@ -8,11 +8,11 @@ namespace Presentaion
     [Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates/{gateId}/Departments")]
-    public class Departmentcontroller : ControllerBase
+    public class DepartmentController : ControllerBase
     {
         private readonly IServiceManager service;
 
-        public Departmentcontroller(IServiceManager service)
+        public DepartmentController(IServiceManager service)
         {
             this.service = service;
         }

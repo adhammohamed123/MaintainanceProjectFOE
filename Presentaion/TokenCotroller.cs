@@ -6,10 +6,10 @@ namespace Presentaion
 {
     [Route("api/Token")]
     [ApiController]
-    public class TokenCotroller : ControllerBase
+    public class TokenController : ControllerBase
     {
         private readonly IServiceManager service;
-        public TokenCotroller(IServiceManager service)
+        public TokenController(IServiceManager service)
         {
             this.service = service;
         }

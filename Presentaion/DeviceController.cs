@@ -33,7 +33,7 @@ namespace Presentaion
 			return Ok(data.devices);
 		}
 
-		[HttpGet()]
+		[HttpGet]
 		public IActionResult GetAlldevicesBasedOnOffice(int regionId, int gateId, int deptId, int officeId)
 		{
 			var data = service.DeviceService.GetAllRegisteredDevices(regionId, gateId, deptId, officeId, false);

@@ -14,6 +14,19 @@ namespace FOE.Maintainance.Extensions
 {
     public static class ServiceExtensions
     {
+        public static IServiceCollection ConfigureCORS(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            });
+            return services;
+        }
         public static IServiceCollection ConfigureLogger(this IServiceCollection services)
         {
             services.AddSingleton<ILoggerManager, LoggerManager>();

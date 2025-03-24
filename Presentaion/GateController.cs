@@ -46,7 +46,7 @@ namespace Presentaion
             return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
         }
         [Authorize(Roles = "Admin")]
-        [HttpDelete("gateId")]
+        [HttpDelete("{gateId}")]
 		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
 		{
 			await service.GateService.DeleteGateAsync(regionId, gateId);

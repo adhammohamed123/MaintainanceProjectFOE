@@ -20,6 +20,7 @@ namespace Core.Entities
 
     public class User : IdentityUser,ISoftDeletedModel
     {
+        // user related to Department
         public ICollection<Specialization> Specializations { get; set; } = new HashSet<Specialization>();
         public bool IsDeleted { get ; set ; }
         public string Name { get; set; }
