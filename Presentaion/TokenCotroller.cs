@@ -14,7 +14,6 @@ namespace Presentaion
             this.service = service;
         }
         [HttpPost("refresh")]
-       
         public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
         {
             var tokenDtoToReturn = await service.UserService.RefreshToken(tokenDto);

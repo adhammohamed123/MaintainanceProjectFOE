@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-	[Authorize]
+//	[Authorize]
 	[ApiController]
 	[Route("api/Failures")]
 	public class FailureController : ControllerBase
@@ -30,14 +30,15 @@ namespace Presentaion
 			var data = service.FailureService.GetById(failureId, trackchanges: false);
 			return Ok(data);
 		}
-		[Authorize(Roles = "Admin")]
+		//[Authorize(Roles = "Admin")]
         [HttpPost]
 		public async Task<IActionResult> Create([FromBody] string name)
 		{
 			var newFailure = await service.FailureService.CreateFailure(name);
-			return CreatedAtRoute("GetFailureBasedOnId", new { failureId = newFailure.Id }, newFailure);
-		}
-        [Authorize(Roles = "Admin")]
+			return CreatedAtAction(nameof(GetFailure), new { failureId = newFailure.Id }, newFailure);
+            //return CreatedAtRoute("GetFailureBasedOnId", new { failureId = newFailure.Id }, newFailure);
+        }
+       // [Authorize(Roles = "Admin")]
         [HttpDelete("{failureId}")]
 		public async Task<IActionResult> Delete(int failureId)
 		{

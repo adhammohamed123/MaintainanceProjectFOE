@@ -23,15 +23,46 @@ namespace Service
             this.logger = logger;
         }
 
-		public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto, string userId)
+        // receive device for maintainance and create a new maintainance record
+        public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto, string userId)
 		{
 			var entity = mapper.Map<DeviceFailureHistory>(dto);
-			entity.CreatedByUserId = userId;
-			entity.ReceiverID=userId;
-            await repository.MaintaninanceRepo.RegisterNew(entity,dto.FailureIds);
-			await repository.SaveAsync();
-			return mapper.Map<DeviceFailureHistoryDto>(entity);
-		}
+			entity.CreatedByUserId = entity.ReceiverID = userId;
+			//entity.State = Core.Entities.Enums.MaintainStatus.WorkingOnIt;
+			var device = repository.DeviceRepo.GetById(entity.DeviceId, true);
+			if (device == null)
+				throw new DeviceNotFoundException(entity.DeviceId);
+			//if (device.DeviceStatus == Core.Entities.Enums.DeviceStatus.InMaintain)
+               // throw new WeCannotOpenANewMaintainanceOperationWhileAnotehrOneIsNotEndedForTheSameDevice(entity.Id,device.Id);
+
+            device.DeviceStatus = Core.Entities.Enums.DeviceStatus.InMaintain;
+
+			foreach (var failureId in dto.FailureIds)
+			{
+                //TODO Optimize this query to get all failures at once
+                var failure = repository.FailureRepo.GetById(failureId, false);
+                if (failure == null)
+                    throw new FailureNotFoundException(failureId);
+
+                entity.FailureMaintains.Add(new FailureMaintain
+				{
+					DeviceFailureHistoryId = entity.Id,
+					FailureId = failureId,
+				});
+			}
+		
+			await repository.MaintaninanceRepo.RegisterNew(entity);
+            await repository.SaveAsync();
+			entity= repository.MaintaninanceRepo.GetDeviceFailureHistoryById(entity.Id, false);
+            return mapper.Map<DeviceFailureHistoryDto>(entity);
+
+            //var entity = mapper.Map<DeviceFailureHistory>(dto);
+            //entity.CreatedByUserId = userId;
+            //entity.ReceiverID=userId;
+            //         await repository.MaintaninanceRepo.RegisterNew(entity,dto.FailureIds);
+            //await repository.SaveAsync();
+            //return mapper.Map<DeviceFailureHistoryDto>(entity);
+        }
 
 		public (IEnumerable<DeviceFailureHistoryDto> maintainRecords, MetaData metaData) GetAllAsync( MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
 		{
@@ -51,7 +82,7 @@ namespace Service
 
 		public IEnumerable<DeviceFailureHistoryDto> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
 		{
-			var entities = repository.MaintaninanceRepo.GetDeviceFailureHistoriesByDeviceId(deviceId, trackchanges).ToList();
+			var entities = repository.MaintaninanceRepo.GetDeviceFailureHistoriesByDeviceId(deviceId, trackchanges);
 			return mapper.Map<IEnumerable<DeviceFailureHistoryDto>>(entities);
 		}
 

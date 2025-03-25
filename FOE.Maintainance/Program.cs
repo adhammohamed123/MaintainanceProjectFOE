@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using NLog;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentD
 builder.Services.AddControllers(cofig =>
 {
     cofig.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+}).AddJsonOptions(opt => {
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 })
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 

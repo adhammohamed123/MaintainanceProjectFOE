@@ -10,7 +10,7 @@ namespace Presentaion
 {
     [ApiController]
     [Route("api/Regions")]
-    [Authorize]
+   // [Authorize]
     public class RegionController : ControllerBase
     {
         protected  readonly IServiceManager service;
@@ -34,14 +34,15 @@ namespace Presentaion
             return Ok(data);
         }
 
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] string name)
         {
            var newRegion=  await service.RegionService.CreateNewRegionAsync(name);
-            return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
+            return CreatedAtAction(nameof(GetRegion), new { regionId = newRegion.Id }, newRegion);
+            //return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
         }
-        [Authorize(Roles= "Admin")]
+      //  [Authorize(Roles= "Admin")]
         [HttpDelete("{regionId}")]
 		public async Task<IActionResult> Delete(int regionId)
 		{

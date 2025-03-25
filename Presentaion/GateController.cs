@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates")]
     public class GateController : ControllerBase
@@ -38,14 +38,16 @@ namespace Presentaion
            var data=  service.GateService.GetSpecificGate(regionId, gateId, false);
             return Ok(data);
         }
-        [Authorize(Roles = "Admin")]
+     //   [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateNewGate(int regionId,[FromBody]string gateName)
         {
             var gate = await service.GateService.CreateNewGateInRegion(regionId, gateName,false);
-            return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
+
+            return CreatedAtAction(nameof(GetOne), new { regionId, gateId = gate.Id }, gate);
+            // return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
         }
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         [HttpDelete("{gateId}")]
 		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
 		{

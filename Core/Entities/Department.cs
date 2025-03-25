@@ -10,5 +10,6 @@ namespace Core.Entities
         public Gate Gate { get; set; }
         // public ICollection<Gate> Gates { get; set; } = new HashSet<Gate>();
         public ICollection<Office> Offices { get; set; } = new HashSet<Office>();
+        public ICollection<User> StuffUsers { get; set; } = new HashSet<User>();
     }
 }

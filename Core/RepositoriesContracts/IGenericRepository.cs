@@ -18,6 +18,7 @@ namespace Core.RepositoryContracts
     }
     public interface IDeviceRepo
     {
+        Device? GetById(int id, bool trackchanges);
         PagedList<Device> GetAllDevices(DeviceRequestParameters deviceRequestParameters,bool trackchanges);
         IQueryable<Device> GetAllRegisteredDevicesInSpecificOffice(int officeId,bool trackchanges);
         Device? GetById(int officeId,int id,bool trackchanges);
@@ -32,7 +33,7 @@ namespace Core.RepositoryContracts
 		  PagedList<DeviceFailureHistory> GetDeviceFailureHistories(MaintainanceRequestParameters maintainanceRequestParameters,bool trackchanges);
           IQueryable<DeviceFailureHistory> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges);
           DeviceFailureHistory? GetDeviceFailureHistoryById(int id, bool trackchanges);
-          Task RegisterNew(DeviceFailureHistory deviceFailureHistory,List<int> failureIds);
+          Task RegisterNew(DeviceFailureHistory deviceFailureHistory);
           
      	}
 

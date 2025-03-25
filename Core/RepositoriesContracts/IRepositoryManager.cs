@@ -11,7 +11,7 @@
         public IRegionRepo RegionRepo { get; }
         public IUserRepo UserRepo { get;}
         public ISpecializationRepo SpecializationRepo { get;}
-
+        public IFailureMaintainRepo FailureMaintainRepo { get;}
         public Task SaveAsync();
     }
 

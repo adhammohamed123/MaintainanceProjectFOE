@@ -15,25 +15,22 @@ namespace Repository
 		public PagedList<DeviceFailureHistory> GetDeviceFailureHistories(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
 		{
 			//-->		
-			var items =FindAll(trackchanges).Include(h => h.Failures)
-				.Search(maintainanceRequestParameters.SearchTerm)
+			var items =FindAll(trackchanges).Include(h => h.FailureMaintains).ThenInclude(f => f.Failure)
+                .Search(maintainanceRequestParameters.SearchTerm)
 				.Sort(maintainanceRequestParameters.OrderBy)
                 .ToList();
 			return PagedList<DeviceFailureHistory>.ToPagedList(items, maintainanceRequestParameters.PageNumber, maintainanceRequestParameters.PageSize);
 		}
 		public IQueryable<DeviceFailureHistory> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
-		=> FindByCondition(x => x.DeviceId == deviceId, trackchanges).Include(h => h.Failures)
+		=> FindByCondition(x => x.DeviceId == deviceId, trackchanges).Include(h => h.FailureMaintains).ThenInclude(f=>f.Failure)
 			.OrderByDescending(d=>d.LastModifiedDate ?? d.CreatedDate);
 
 		public DeviceFailureHistory? GetDeviceFailureHistoryById(int id, bool trackchanges)
-		=> FindByCondition(x => x.Id == id, trackchanges).Include(h => h.Failures).SingleOrDefault();
+		=> FindByCondition(x => x.Id == id, trackchanges).Include(h => h.FailureMaintains).ThenInclude(f=>f.Failure).SingleOrDefault();
 
-		public async Task RegisterNew(DeviceFailureHistory deviceFailureHistory, List<int> failureIds)
-		{
-			var failures = await context.Failures.Where(f => failureIds.Contains(f.Id)).ToListAsync();
-			deviceFailureHistory.Failures = failures;
-			await Create(deviceFailureHistory);
-		}
+		public async Task RegisterNew(DeviceFailureHistory deviceFailureHistory)
+		=>await Create(deviceFailureHistory);
+		
 	}
 
 }

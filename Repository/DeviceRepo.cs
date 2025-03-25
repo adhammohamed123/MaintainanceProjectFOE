@@ -41,5 +41,8 @@ namespace Repository
 
 		public Device? GetById(int officeId, int id, bool trackchanges)
 		=> FindByCondition(d => d.OfficeId.Equals(officeId) && d.Id.Equals(id), trackchanges).SingleOrDefault();
-	}
+
+        public Device? GetById(int id, bool trackchanges)
+        =>FindByCondition(d=>d.Id.Equals(id), trackchanges).SingleOrDefault();
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,6 +24,7 @@ namespace Service.DTOs
 		public string GPU { get; set; }
 		public string RAMTotal { get; set; }
 		public int OfficeId { get; set; }
+        public DeviceStatus DeviceStatus { get; set; }
     }
 	
 	public record RegionDto(string Name,int Id);
@@ -42,26 +44,31 @@ namespace Service.DTOs
 		public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
 		public string? Notes { get; set; }
-	}
+        public MaintainOperationLocation MaintainLocation { get; set; }
+    }
 
-	public class DeviceFailureHistoryDto
+	public record FailureDto(string Name,FailureActionDone State);
+    public class DeviceFailureHistoryDto
 	{
 		public int Id { get; set; }
 		public int DeviceId { get; set; }
 		public string ReceiverID { get; set; }
-		public List<string> Failures { get; set; } = new();
+		public List<FailureDto> FailureMaintains { get; set; } = new();
 		public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
 		public string? Notes { get; set; }
 		public string? MaintainerId { get; set; }
-		public bool IsProblemSolved { get; set; }
-		public bool IsDeliverd { get; set; }
+		
 		public string CreatedByUserId { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public string? LastModifiedUserId { get; set; }
 		public DateTime? LastModifiedDate { get; set; }
 		public bool IsDeleted { get; set; }
-	}
+        public MaintainOperationLocation MaintainLocation { get; set; }
+        public MaintainStatus State { get; set; }
+    }
+
+    
     public record UserForRegistrationDto
     {
         [Required(ErrorMessage = "Name is required")]
@@ -74,6 +81,7 @@ namespace Service.DTOs
         public string ConfirmPass { get; set; }
         public string? Email { get; init; }
         public string? PhoneNumber { get; init; }
+        public int DepartmentId { get; set; }
         public ICollection<string>? Roles { get; init; }
     }
     public record UserForAuthenticationDto

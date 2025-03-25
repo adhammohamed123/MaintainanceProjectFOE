@@ -14,6 +14,7 @@ namespace Repository
         public DbSet<Device> Devices { get; set; }
         public DbSet<DeviceFailureHistory> Maintainances { get; set; }
         public DbSet<Failure> Failures { get; set; }
+        public DbSet<FailureMaintain> FailureMaintains { get; set; }
         public DbSet<Gate> Gates { get; set; }
         public DbSet<Office> Offices { get; set; }
         public DbSet<Region> Regions { get; set; }
@@ -51,6 +52,8 @@ namespace Repository
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<FailureMaintain>()
+                .HasKey(f => new { f.FailureId, f.DeviceFailureHistoryId });
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             // Apply global query filter to all entities implementing ISoftDeletedModel

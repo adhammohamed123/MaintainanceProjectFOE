@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using Contracts.Base;
 using Core.Entities;
+using Core.Entities.Enums;
+using Core.Features;
 using Service.DTOs;
+using System.Collections.Generic;
+using System.Linq;
 
 public class MappingProfile:Profile
 {
@@ -14,13 +18,13 @@ public class MappingProfile:Profile
         CreateMap<Gate, GateDto>();
         CreateMap<Department, DepartmentDto>();
         CreateMap<Office, OfficeDto>();
-        CreateMap<DeviceFailureHistory, DeviceFailureHistoryDto>()
-             .ForMember(dest => dest.Failures, opt => opt.MapFrom(src => src.Failures.Select(f => f.Name)));
-		CreateMap<DeviceFailureHistoryDto, DeviceFailureHistory>().ForMember(d=>d.Failures, opt => opt.Ignore());
+        CreateMap<DeviceFailureHistoryDto, DeviceFailureHistory>();
 		CreateMap<DeviceFailureHistoryForCreationDto, DeviceFailureHistory>();
         CreateMap<UserForRegistrationDto, User>();
-       
-
+        CreateMap<DeviceFailureHistory, DeviceFailureHistoryDto>()
+                 .ForMember(dest => dest.FailureMaintains, opt =>
+                 opt.MapFrom(src => src.FailureMaintains.Select(fm => new FailureDto(fm.Failure.Name, fm.FailureActionDone))));
+        CreateMap<DeviceFailureHistoryDto, DeviceFailureHistory>();
 
     }
 }

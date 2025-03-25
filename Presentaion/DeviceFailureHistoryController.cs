@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Presentaion
 {
-	[Authorize]
+	//[Authorize]
 	[Route("api/maintenance")]
 	[ApiController]
 	public class DeviceFailureHistoryController : ControllerBase
@@ -49,9 +49,10 @@ namespace Presentaion
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] DeviceFailureHistoryForCreationDto dto)
 		{
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "41DE9DCE-5A19-4C25-B336-8BA113BC9886";
             var created = await _service.MaintaninanceService.CreateAsync(dto,userId);
-			return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+			
+	    	return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 		}
 
 		[HttpPatch("{id}")]

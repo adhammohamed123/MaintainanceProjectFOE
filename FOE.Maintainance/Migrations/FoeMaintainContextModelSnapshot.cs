@@ -45,6 +45,15 @@ namespace FOE.Maintainance.Migrations
                     b.HasIndex("GateId");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            GateId = 3,
+                            IsDeleted = false,
+                            Name = "النظم و الرقمنة"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.Device", b =>
@@ -68,6 +77,9 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("CreatedUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("DeviceStatus")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("DomainIDIfExists")
                         .HasColumnType("nvarchar(max)");
@@ -149,17 +161,14 @@ namespace FOE.Maintainance.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeliverd")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsProblemSolved")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("MaintainLocation")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("MaintainerId")
                         .HasColumnType("nvarchar(450)");
@@ -170,6 +179,9 @@ namespace FOE.Maintainance.Migrations
                     b.Property<string>("ReceiverID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("State")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -206,6 +218,27 @@ namespace FOE.Maintainance.Migrations
                     b.ToTable("Failures");
                 });
 
+            modelBuilder.Entity("Core.Entities.FailureMaintain", b =>
+                {
+                    b.Property<int>("FailureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeviceFailureHistoryId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("FailureActionDone")
+                        .HasColumnType("tinyint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("FailureId", "DeviceFailureHistoryId");
+
+                    b.HasIndex("DeviceFailureHistoryId");
+
+                    b.ToTable("FailureMaintains");
+                });
+
             modelBuilder.Entity("Core.Entities.Gate", b =>
                 {
                     b.Property<int>("Id")
@@ -229,6 +262,29 @@ namespace FOE.Maintainance.Migrations
                     b.HasIndex("RegionId");
 
                     b.ToTable("Gates");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "العراق",
+                            RegionId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "الامارات",
+                            RegionId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "السعودية",
+                            RegionId = 2
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.Office", b =>
@@ -274,6 +330,20 @@ namespace FOE.Maintainance.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Regions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsDeleted = false,
+                            Name = "جهاز مستقبل مصر"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsDeleted = false,
+                            Name = "الضبعة"
+                        });
                 });
 
             modelBuilder.Entity("Core.Entities.Specialization", b =>
@@ -307,6 +377,9 @@ namespace FOE.Maintainance.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -363,6 +436,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -378,35 +453,21 @@ namespace FOE.Maintainance.Migrations
                         {
                             Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "94577f5a-f3f3-418b-b559-228f68df3292",
-                            Email = "Admin@Admin.com",
+                            ConcurrencyStamp = "cbf75025-4771-42c0-8e60-72ccc445ad0a",
+                            DepartmentId = 1,
+                            Email = "adhammo909@gmail.com",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
-                            Name = "Admin",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "SuperAdmin",
+                            Name = "ElD0ma",
+                            NormalizedUserName = "SUPER",
+                            PasswordHash = "SuperAdmin123",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "3d9260fe-9a86-432a-a257-012fd9eafc13",
+                            SecurityStamp = "f1a18f2c-7251-44f8-9b7c-e62a713e179f",
                             TwoFactorEnabled = false,
-                            UserName = "Admin"
+                            UserName = "Super"
                         });
-                });
-
-            modelBuilder.Entity("DeviceFailureHistoryFailure", b =>
-                {
-                    b.Property<int>("DeviceFailureHistoriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FailuresId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DeviceFailureHistoriesId", "FailuresId");
-
-                    b.HasIndex("FailuresId");
-
-                    b.ToTable("DeviceFailureHistoryFailure");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -642,6 +703,25 @@ namespace FOE.Maintainance.Migrations
                     b.Navigation("Receiver");
                 });
 
+            modelBuilder.Entity("Core.Entities.FailureMaintain", b =>
+                {
+                    b.HasOne("Core.Entities.DeviceFailureHistory", "DeviceFailureHistory")
+                        .WithMany("FailureMaintains")
+                        .HasForeignKey("DeviceFailureHistoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.Failure", "Failure")
+                        .WithMany("FailureMaintains")
+                        .HasForeignKey("FailureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DeviceFailureHistory");
+
+                    b.Navigation("Failure");
+                });
+
             modelBuilder.Entity("Core.Entities.Gate", b =>
                 {
                     b.HasOne("Core.Entities.Region", "Region")
@@ -664,19 +744,15 @@ namespace FOE.Maintainance.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("DeviceFailureHistoryFailure", b =>
+            modelBuilder.Entity("Core.Entities.User", b =>
                 {
-                    b.HasOne("Core.Entities.DeviceFailureHistory", null)
-                        .WithMany()
-                        .HasForeignKey("DeviceFailureHistoriesId")
+                    b.HasOne("Core.Entities.Department", "Department")
+                        .WithMany("StuffUsers")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.Failure", null)
-                        .WithMany()
-                        .HasForeignKey("FailuresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -748,11 +824,23 @@ namespace FOE.Maintainance.Migrations
             modelBuilder.Entity("Core.Entities.Department", b =>
                 {
                     b.Navigation("Offices");
+
+                    b.Navigation("StuffUsers");
                 });
 
             modelBuilder.Entity("Core.Entities.Device", b =>
                 {
                     b.Navigation("DeviceFailureHistories");
+                });
+
+            modelBuilder.Entity("Core.Entities.DeviceFailureHistory", b =>
+                {
+                    b.Navigation("FailureMaintains");
+                });
+
+            modelBuilder.Entity("Core.Entities.Failure", b =>
+                {
+                    b.Navigation("FailureMaintains");
                 });
 
             modelBuilder.Entity("Core.Entities.Gate", b =>

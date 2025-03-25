@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-    [Authorize]
+ //   [Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates/{gateId}/Departments")]
     public class DepartmentController : ControllerBase
@@ -30,14 +30,16 @@ namespace Presentaion
             var data = service.DepartmentService.GetDept(regionId,gateId,deptId, trakchanages: false);
             return Ok(data);
         }
-        [Authorize(Roles = "Admin")]
+     //   [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(int regionId, int gateId, [FromBody] string deptName)
         {
             var result = await service.DepartmentService.CreateNewDepartment(regionId, gateId, deptName, trackchanges: false);
-            return CreatedAtRoute("GetDept", new { regionId, gateId, deptId = result.Id }, result);
+            
+            return CreatedAtAction(nameof(GetDepartment), new { regionId, gateId, deptId = result.Id }, result);
+            //return CreatedAtRoute("GetDept", new { regionId, gateId, deptId = result.Id }, result);
         }
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         [HttpDelete("{deptId}")]
         public async Task<IActionResult> Delete(int regionId, int gateId, int deptId)
         {

@@ -19,7 +19,7 @@ namespace Repository
         private Lazy<IRegionRepo> _RegionRepo;
         private Lazy<IUserRepo> _UserRepo;
         private Lazy<ISpecializationRepo> _SpecializationRepo;
-
+        private Lazy<IFailureMaintainRepo> _FailureMaintainRepo;
         public RepositoryManager(FoeMaintainContext context)
         {
             this.context = context;
@@ -32,6 +32,7 @@ namespace Repository
             _RegionRepo = new Lazy<IRegionRepo>(() => new RegionRepo(context));
             _UserRepo = new Lazy<IUserRepo>(() => new UserRepo(context));
             _SpecializationRepo = new Lazy<ISpecializationRepo>(() => new SpecializationRepo(context));
+            _FailureMaintainRepo = new Lazy<IFailureMaintainRepo>(() => new FailureMaintainRepo(context));
         }
 
         public IDeviceRepo DeviceRepo => _DeviceRepo.Value;
@@ -43,6 +44,8 @@ namespace Repository
         public IRegionRepo RegionRepo => _RegionRepo.Value;
         public IUserRepo UserRepo => _UserRepo.Value;
         public ISpecializationRepo SpecializationRepo => _SpecializationRepo.Value;
+
+        public IFailureMaintainRepo FailureMaintainRepo =>_FailureMaintainRepo.Value;
 
         public async Task SaveAsync() => await context.SaveChangesAsync();
     }

@@ -1,5 +1,6 @@
 ﻿using Contracts.Base;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
@@ -16,6 +17,8 @@ namespace Core.Entities
         public DateTime? LastModifiedDate { get; set; }
         public bool IsDeleted { get; set; }
         public int Id { get; set; }
+
+       
     }
 
     public class User : IdentityUser,ISoftDeletedModel
@@ -26,6 +29,9 @@ namespace Core.Entities
         public string Name { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+        [ForeignKey(nameof(Department))]
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
 
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     [ApiController]
 	[Route("api/Users")]
 	public class UserController : ControllerBase
@@ -18,7 +18,6 @@ namespace Presentaion
 		}
 
 		[HttpGet]
-        
 		public IActionResult GetAlls()
 		{
 			var data = service.UserService.GetAllUser(trackchanges: false).ToList();
