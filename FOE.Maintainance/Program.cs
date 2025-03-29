@@ -60,7 +60,10 @@ builder.Services.AddSwaggerGen(s =>
         }
         });
 });
-
+builder.Services.AddHttpsRedirection(options =>
+{
+    options.HttpsPort = 7193;
+});
 var app = builder.Build();
 
 app.HandleExceptions();

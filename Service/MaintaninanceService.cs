@@ -24,16 +24,16 @@ namespace Service
         }
 
         // receive device for maintainance and create a new maintainance record
-        public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto, string userId)
+        public async Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto)
 		{
 			var entity = mapper.Map<DeviceFailureHistory>(dto);
-			entity.CreatedByUserId = entity.ReceiverID = userId;
+			entity.CreatedByUserId = entity.ReceiverID ;
 			//entity.State = Core.Entities.Enums.MaintainStatus.WorkingOnIt;
 			var device = repository.DeviceRepo.GetById(entity.DeviceId, true);
 			if (device == null)
 				throw new DeviceNotFoundException(entity.DeviceId);
-			//if (device.DeviceStatus == Core.Entities.Enums.DeviceStatus.InMaintain)
-               // throw new WeCannotOpenANewMaintainanceOperationWhileAnotehrOneIsNotEndedForTheSameDevice(entity.Id,device.Id);
+			if (device.DeviceStatus == Core.Entities.Enums.DeviceStatus.InMaintain)
+                throw new WeCannotOpenANewMaintainanceOperationWhileAnotehrOneIsNotEndedForTheSameDevice(entity.Id,device.Id);
 
             device.DeviceStatus = Core.Entities.Enums.DeviceStatus.InMaintain;
 
@@ -86,6 +86,32 @@ namespace Service
 			return mapper.Map<IEnumerable<DeviceFailureHistoryDto>>(entities);
 		}
 
+		public async Task MakeDeviceDone(int DeviceId)
+		{
+			var d = repository.DeviceRepo.GetById(DeviceId, true);
+            if (d == null)
+			{
+                throw new DeviceNotFoundException(DeviceId);
+            }
+            d.DeviceStatus = Core.Entities.Enums.DeviceStatus.WithOwner;
+			await repository.SaveAsync();
+        }
+		public async Task UpdateMaintainanceRecord(DeviceFailureHistoryDto dto)
+		{
+			var entity = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(dto.Id, true);
+            if (entity == null)
+                throw new DeviceFailureHistoryNotFoundException(dto.Id);
+			bool isSolved =
+             dto.FailureMaintains
+             .Any(f => f.State == Core.Entities.Enums.FailureActionDone.Solved);
+
+            mapper.Map(dto, entity);
+			if (isSolved)
+			{
+                entity.State = Core.Entities.Enums.MaintainStatus.Done;
+            }
+			await repository.SaveAsync();
+        }
 		public (DeviceFailureHistoryDto dto, DeviceFailureHistory entity) GetDeviceFailureHistoryByIdForPartialUpdate(int id, bool trackchanges)
 		{
 			var entity=repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, trackchanges);

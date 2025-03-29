@@ -10,7 +10,11 @@ namespace Repository
         {
         }
 
-		public async Task CreateUser(User User)
+        public void associateUserWithSpecialization(User user, Specialization specialization)
+         =>  user.Specializations.Add(specialization);
+        
+
+        public async Task CreateUser(User User)
 		=> await Create(User);
 
 		public void DeleteUser(User User)

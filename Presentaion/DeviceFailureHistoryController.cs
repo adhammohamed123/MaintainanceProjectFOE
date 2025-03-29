@@ -49,23 +49,34 @@ namespace Presentaion
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] DeviceFailureHistoryForCreationDto dto)
 		{
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "41DE9DCE-5A19-4C25-B336-8BA113BC9886";
-            var created = await _service.MaintaninanceService.CreateAsync(dto,userId);
+            var created = await _service.MaintaninanceService.CreateAsync(dto);
 			
 	    	return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 		}
+		[HttpPut("{DeviceId}")]
+		public async Task<IActionResult> MarkDeviceDone(int DeviceId)
+		{
+            await _service.MaintaninanceService.MakeDeviceDone(DeviceId);
+			return NoContent();
+		}
+		[HttpPut]
+		public async Task<IActionResult> Update([FromBody] DeviceFailureHistoryDto dto)
+		{
+			await _service.MaintaninanceService.UpdateMaintainanceRecord(dto);
+            return NoContent();
+        }
 
-		[HttpPatch("{id}")]
+       /* [HttpPatch("{id}")]
 		public async Task<IActionResult> Update(int id ,[FromBody] JsonPatchDocument<DeviceFailureHistoryDto> dto)
         {
-		 var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "41DE9DCE-5A19-4C25-B336-8BA113BC9886";
 
-			
-            var result= _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
+
+            var result = _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
 			dto.ApplyTo(result.dto);
 			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity,userId);
 			return NoContent();
 		}
-
+*/
 	}
 }

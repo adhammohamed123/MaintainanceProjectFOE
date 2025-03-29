@@ -11,10 +11,12 @@ namespace Service.Services
 		(IEnumerable<DeviceFailureHistoryDto> maintainRecords,MetaData metaData) GetAllAsync(MaintainanceRequestParameters maintainanceRequestParameters,bool trackchanges);
         IEnumerable<DeviceFailureHistoryDto> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges);
 		DeviceFailureHistoryDto? GetByIdAsync(int id);
-		Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto,string userId);
+		Task<DeviceFailureHistoryDto> CreateAsync(DeviceFailureHistoryForCreationDto dto);
         (DeviceFailureHistoryDto dto,DeviceFailureHistory entity) GetDeviceFailureHistoryByIdForPartialUpdate(int id, bool trackchanges);
         Task SavePartialUpdate(DeviceFailureHistoryDto dto,DeviceFailureHistory entity,string UserId);
-	}
+        Task UpdateMaintainanceRecord(DeviceFailureHistoryDto dto);
+        Task MakeDeviceDone(int deviceId);
+    }
   
     
     
@@ -28,9 +30,14 @@ namespace Service.Services
         Task<TokenDto> CreateToken(bool populateExp);
         Task<TokenDto> RefreshToken(TokenDto tokenDto);
         Task DeleteUser(string id,bool trackchanges);
-	}
+        Task AssociateUserWithSpecialization(string userId, int specializationId);
+
+    }
     public interface ISpecializationService
     {
-
+        IQueryable<NameWithIdentifierDto> GetAllSpecializations(bool trackchanges);
+        NameWithIdentifierDto? GetSpecializationById(int id, bool trackchanges);
+        Task<NameWithIdentifierDto> CreateSpecialization(string specializationName);
+        Task DeleteSpecialization(int id);
     }
 }

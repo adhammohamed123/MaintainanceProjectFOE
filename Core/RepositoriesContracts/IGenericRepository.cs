@@ -46,10 +46,14 @@ namespace Core.RepositoryContracts
 	    User? GetFromUserById(string id, bool trackchanges);
         Task CreateUser(User User);  
         void DeleteUser(User User);
-	}
+        void associateUserWithSpecialization(User user, Specialization specialization);
+    }
     public interface ISpecializationRepo
     {
-
+        Specialization? GetSpecializationById(int id, bool trackchanges);
+        IQueryable<Specialization> GetAllSpecializations(bool trackchanges);
+        Task CreateSpecialization(Specialization specialization);
+        void DeleteSpecialization(Specialization specialization);
     }
 
 }

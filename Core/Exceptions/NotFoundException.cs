@@ -66,5 +66,11 @@ namespace Core.Exceptions
 		{
 		}
 	}
+    public class SpecializationNotFoundException : NotFoundException
+    {
+        public SpecializationNotFoundException(int id) : base($"No Specialization Exists with this id {id}")
+        {
+        }
+    }
 
 }

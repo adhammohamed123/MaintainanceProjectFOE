@@ -6,7 +6,9 @@ namespace Core.RepositoryContracts
     {
         Task CreateFailureMaintain(FailureMaintain failureMaintain);
         void DeleteFailureMaintain(FailureMaintain failureMaintain);
-        
+        //IQueryable<FailureMaintain> GetAllFailureMaintains(int maitainId, bool trackchanges);
+
+
 
     }
 

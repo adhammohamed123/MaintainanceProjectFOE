@@ -107,6 +107,16 @@ namespace Service
             return await CreateToken(populateExp: false);
         }
 
+        public async Task AssociateUserWithSpecialization(string userId, int specializationId)
+        { 
+            var user = GetObjectAndCheckExistance(userId, trackchanges: true);
+            var specialization = repository.SpecializationRepo.GetSpecializationById(specializationId, trackchanges: true);
+            if (specialization == null)
+                throw new SpecializationNotFoundException(specializationId);
+            repository.UserRepo.associateUserWithSpecialization(user, specialization);
+            await repository.SaveAsync();
+        }
+
 
         #region Private Helper methods
         private SigningCredentials GetSigningCredentials()
@@ -192,8 +202,9 @@ namespace Service
                 throw new UserNotFoundException(id);
             }
             return User;
-        } 
+        }
         #endregion
+
 
 
     }

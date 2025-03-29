@@ -23,11 +23,15 @@ namespace Service.DTOs
 		public string CPU { get; set; }
 		public string GPU { get; set; }
 		public string RAMTotal { get; set; }
-		public int OfficeId { get; set; }
+		public NameWithIdentifierDto Office { get; set; }
+        public NameWithIdentifierDto Department{ get; set; }
+        public NameWithIdentifierDto Gate { get; set; }
+        public NameWithIdentifierDto Region { get; set; }
         public DeviceStatus DeviceStatus { get; set; }
     }
-	
-	public record RegionDto(string Name,int Id);
+	public record UserSpecializationDto(string UserId, int SpecializationId);
+
+    public record RegionDto(string Name,int Id);
 
 	public record GateDto(int Id,string Name,int RegionId);
 	public record DepartmentDto(int Id,string Name,int GateId);
@@ -40,24 +44,30 @@ namespace Service.DTOs
 	public class DeviceFailureHistoryForCreationDto
 	{
 		public int DeviceId { get; set; }
-		public List<int> FailureIds { get; set; } = new();
+        public string ReceiverID { get; set; }
+        public string? MaintainerId { get; set; }
+
+        public List<int> FailureIds { get; set; } = new();
 		public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
 		public string? Notes { get; set; }
         public MaintainOperationLocation MaintainLocation { get; set; }
     }
 
-	public record FailureDto(string Name,FailureActionDone State);
+	public record FailureDto(int id,string Name,FailureActionDone State);
     public class DeviceFailureHistoryDto
 	{
 		public int Id { get; set; }
 		public int DeviceId { get; set; }
 		public string ReceiverID { get; set; }
+		public string? ReceiverName { get; set; }
 		public List<FailureDto> FailureMaintains { get; set; } = new();
-		public string Delievry { get; set; }
+		//public List<Failure> Failures { get; set; } = new List<Failure>();
+        public string Delievry { get; set; }
 		public string DelievryPhoneNumber { get; set; }
 		public string? Notes { get; set; }
 		public string? MaintainerId { get; set; }
+		public string? MaintainerName { get; set; }
 		
 		public string CreatedByUserId { get; set; }
 		public DateTime CreatedDate { get; set; }

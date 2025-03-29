@@ -15,7 +15,11 @@ namespace Repository
 		public PagedList<DeviceFailureHistory> GetDeviceFailureHistories(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
 		{
 			//-->		
-			var items =FindAll(trackchanges).Include(h => h.FailureMaintains).ThenInclude(f => f.Failure)
+			var items =FindAll(trackchanges)
+				.Include(h=>h.Maintainer)
+				.Include(h=>h.Receiver)
+				.Include(h => h.FailureMaintains)
+				.ThenInclude(f => f.Failure)
                 .Search(maintainanceRequestParameters.SearchTerm)
 				.Sort(maintainanceRequestParameters.OrderBy)
                 .ToList();
