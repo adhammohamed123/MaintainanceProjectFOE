@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-   // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates/{gateId}/Departments/{deptId}/Offices")]
     public class OfficeController:ControllerBase

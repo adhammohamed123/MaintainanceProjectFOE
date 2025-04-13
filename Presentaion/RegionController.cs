@@ -10,7 +10,7 @@ namespace Presentaion
 {
     [ApiController]
     [Route("api/Regions")]
-   // [Authorize]
+    [Authorize]
     public class RegionController : ControllerBase
     {
         protected  readonly IServiceManager service;

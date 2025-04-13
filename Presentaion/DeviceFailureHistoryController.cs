@@ -1,16 +1,16 @@
-﻿using Service.Services;
-using Microsoft.AspNetCore.Mvc;
-using Service.DTOs;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Core.Entities.Enums;
 using Core.Features;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Presentaion.Attributes;
+using Service.DTOs.MaintainanceDtos;
+using Service.Services;
 using System.Security.Claims;
-using Microsoft.AspNetCore.JsonPatch.Operations;
 
 namespace Presentaion
 {
-	//[Authorize]
+	[Authorize]
 	[Route("api/maintenance")]
 	[ApiController]
 	public class DeviceFailureHistoryController : ControllerBase
@@ -21,13 +21,17 @@ namespace Presentaion
 		{
 			_service = service;
 		}
-
-		[HttpGet]
-		public async Task<IActionResult> GetAll([FromQuery] MaintainanceRequestParameters maintainanceRequestParameters)
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] MaintainanceRequestParameters maintainanceRequestParameters)
 		{
 			var result = _service.MaintaninanceService.GetAllAsync(maintainanceRequestParameters,trackchanges:false);
-			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(result.metaData));
-			return Ok(result.maintainRecords);
+            var response = new
+            {
+                data = result.maintainRecords,
+                pagination = result.metaData// Include pagination info in the response body
+            };
+
+            return Ok(response);
 		}
 
 		[HttpGet("{id}")]
@@ -43,33 +47,46 @@ namespace Presentaion
 		{
 			var result = _service.MaintaninanceService.GetDeviceFailureHistoriesByDeviceId(id,false);
 			if (result == null) return NotFound();
+			
 			return Ok(result);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] DeviceFailureHistoryForCreationDto dto)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Create([FromBody] DeviceFailureHistoryForCreationDto dto)
 		{
-            var created = await _service.MaintaninanceService.CreateAsync(dto);
+			var user=User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var created = await _service.MaintaninanceService.CreateAsync(dto,user);
 			
 	    	return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
 		}
-		[HttpPut("{DeviceId}")]
-		public async Task<IActionResult> MarkDeviceDone(int DeviceId)
+		[HttpPut("MarkDeviceDone")]
+		public async Task<IActionResult> MarkDeviceDone(int MaintainId)
 		{
-            await _service.MaintaninanceService.MakeDeviceDone(DeviceId);
+            var user = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _service.MaintaninanceService.MakeDeviceDone(MaintainId,user);
+			return NoContent();
+		}
+		[HttpPut("ChangeFailureStatus")]
+		public async Task<IActionResult> ChangeFailureStatus(int MaintainId,int FailureId, FailureActionDone status)
+		{
+            await _service.MaintaninanceService.ChangeFailureStatus(MaintainId,FailureId, status);
 			return NoContent();
 		}
 		[HttpPut]
-		public async Task<IActionResult> Update([FromBody] DeviceFailureHistoryDto dto)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Update([FromBody] DeviceFailureHistoryDto dto)
 		{
-			await _service.MaintaninanceService.UpdateMaintainanceRecord(dto);
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			await _service.MaintaninanceService.UpdateMaintainanceRecord(dto,userId);
             return NoContent();
         }
 
-       /* [HttpPatch("{id}")]
-		public async Task<IActionResult> Update(int id ,[FromBody] JsonPatchDocument<DeviceFailureHistoryDto> dto)
+        [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Update(int id ,[FromBody] JsonPatchDocument<DeviceFailureHistoryDto> dto)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "41DE9DCE-5A19-4C25-B336-8BA113BC9886";
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 
             var result = _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
@@ -77,6 +94,6 @@ namespace Presentaion
 			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity,userId);
 			return NoContent();
 		}
-*/
+
 	}
 }

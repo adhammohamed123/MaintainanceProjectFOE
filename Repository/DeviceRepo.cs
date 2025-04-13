@@ -30,8 +30,8 @@ namespace Repository
 		{
 			
 		    var device=FindAll(trackchanges).Include(d => d.Office).ThenInclude(o=>o.Department).ThenInclude(d => d.Gate).ThenInclude(g => g.Region)
+				.Search(deviceRequestParameters.SearchTerm,deviceRequestParameters.SearchOptions)
                 .filter(deviceRequestParameters.RegionId, deviceRequestParameters.GateId, deviceRequestParameters.DeptId, deviceRequestParameters.OfficeId)
-				.Search(deviceRequestParameters.SearchTerm)
 				.Sort(deviceRequestParameters.OrderBy)
                 .ToList();
 			return PagedList<Device>.ToPagedList(device, deviceRequestParameters.PageNumber, deviceRequestParameters.PageSize);
@@ -40,7 +40,12 @@ namespace Repository
 		=>FindByCondition(d=>d.OfficeId.Equals(officeId), trackchanges);
 
 		public Device? GetById(int officeId, int id, bool trackchanges)
-		=> FindByCondition(d => d.OfficeId.Equals(officeId) && d.Id.Equals(id), trackchanges).SingleOrDefault();
+		=> FindByCondition(d => d.OfficeId.Equals(officeId) && d.Id.Equals(id), trackchanges)
+			.Include(c => c.Office)
+			.Include(c => c.Office.Department)
+			.Include(c => c.Office.Department.Gate)
+			.Include(c => c.Office.Department.Gate.Region)
+			.SingleOrDefault();
 
         public Device? GetById(int id, bool trackchanges)
         =>FindByCondition(d=>d.Id.Equals(id), trackchanges).SingleOrDefault();

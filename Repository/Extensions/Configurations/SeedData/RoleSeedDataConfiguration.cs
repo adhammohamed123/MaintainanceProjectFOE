@@ -35,17 +35,33 @@ namespace Repository.Extensions.Configurations.SeedData
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            var hasher = new PasswordHasher<User>();
+
+            var user = new User
+            {
+                Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
+                UserName = "Admin",
+                Name = "ElD0ma",
+                NormalizedUserName = "ADMIN",
+                Email = "adhammo909@gmail.com",
+                DepartmentId = 1
+            };
+            user.PasswordHash = hasher.HashPassword(user, "SuperAdmin123");
+            builder.HasData(user);
+            builder.Property(u => u.Id).HasMaxLength(64);
+        }
+    }
+    public class UserRoleSeedDataConfiguration : IEntityTypeConfiguration<IdentityUserRole<string>>
+    {
+        public void Configure(EntityTypeBuilder<IdentityUserRole<string>> builder)
+        {
             builder.HasData(
-                new User
+                new IdentityUserRole<string>
                 {
-                    Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
-                    UserName = "Super",
-                    Name = "ElD0ma",
-                    NormalizedUserName = "SUPER",
-                    Email = "adhammo909@gmail.com",
-                    PasswordHash = "SuperAdmin123",
-                    DepartmentId = 1
-                });
+                    RoleId = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
+                    UserId = "41DE9DCE-5A19-4C25-B336-8BA113BC9886"
+                }
+                );
         }
     }
     public class RegionsSeedDataConfiguration : IEntityTypeConfiguration<Region>
@@ -83,7 +99,7 @@ namespace Repository.Extensions.Configurations.SeedData
                     RegionId = 2,
                     Name = "الامارات"
                 }
-                ,new Gate
+                , new Gate
                 {
                     Id = 3,
                     RegionId = 2,

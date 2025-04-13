@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using Contracts.Base;
-using Core.RepositoryContracts;
-using Service.DTOs;
-using Service.Services;
 using Core.Entities;
 using Core.Exceptions;
-using System.Threading.Tasks;
-using AutoMapper.QueryableExtensions;
 using Core.Features;
+using Core.RepositoryContracts;
+using Service.DTOs.DeviceDtos;
+using Service.Services;
 namespace Service
 {
     public class DeviceService : IDeviceService
@@ -28,7 +26,7 @@ namespace Service
 			CheckParentExistance(regionId, gateId, deptId, officeId, trackchanges);
 			var deviceEntity = mapper.Map<Device>(device);
 			await  repository.DeviceRepo.CreateDevice(officeId, deviceEntity,UserID);
-	        await	  repository.SaveAsync();
+	        await  repository.SaveAsync();
 			return mapper.Map<DeviceDto>(deviceEntity);
 		}
 
@@ -59,7 +57,19 @@ namespace Service
 			var device = GetObjectAndCheckExistance(officeId, id, trackchanges);
 			return mapper.Map<DeviceDto>(device);
 		}
-		private (Region region,Gate gate,Department dept,Office office ) CheckParentExistance(int regionId, int gateId, int deptId, int officeId,bool trackchanges)
+
+        public async Task UpdateDevice(int regionId, int gateId, int deptId, int officeId, DeviceForUpdateDto deviceForUpdateDto, string userId, bool v)
+        {
+            var Parents= CheckParentExistance(regionId, gateId, deptId, officeId, false);
+            var device = GetObjectAndCheckExistance(officeId, deviceForUpdateDto.Id, true);
+			mapper.Map(deviceForUpdateDto, device);
+			device.LastModifiedUserId = userId;
+			device.Office = Parents.office;
+            device.OfficeId = Parents.office.Id;
+            await repository.SaveAsync();
+        }
+
+        private (Region region,Gate gate,Department dept,Office office ) CheckParentExistance(int regionId, int gateId, int deptId, int officeId,bool trackchanges)
 		{
 			var region=repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
 			if (region == null)

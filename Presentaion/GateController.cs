@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/Regions/{regionId}/Gates")]
     public class GateController : ControllerBase

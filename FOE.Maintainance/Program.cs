@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using NLog;
+using Presentaion.Attributes;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,11 +18,13 @@ builder.Services.AddControllers(cofig =>
 {
     cofig.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
 }).AddJsonOptions(opt => {
+    opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 })
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 
 builder.Services.AddAuthentication();
+builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.ConfigureCORS()
 .AddAutoMapper(typeof(Program))
 .ConfigureLogger()

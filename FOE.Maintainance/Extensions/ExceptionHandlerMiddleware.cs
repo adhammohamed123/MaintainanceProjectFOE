@@ -18,7 +18,7 @@ namespace FOE.Maintainance.Extensions
                     var errorOccured = context.Features.Get<IExceptionHandlerFeature>();
                     if(errorOccured!=null)
                     {
-                        logger.LogError(errorOccured.Error.Message);
+                        logger.LogError($"Something went wrong: {errorOccured.Error}");
                         var statuscode = errorOccured.Error switch
                         {
                             NotFoundException => StatusCodes.Status404NotFound,

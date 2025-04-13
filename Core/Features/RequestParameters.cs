@@ -26,7 +26,8 @@ namespace Core.Features
 		public int? DeptId { get; set; }
 		public int? OfficeId { get; set; }
 		public string? SearchTerm { get; set; }
-	}
+        public string? SearchOptions { get; set; }
+    }
 	public class MaintainanceRequestParameters : RequestParameters
 	{
 		public string? SearchTerm { get; set; }

@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Security.Cryptography;
+using Service.DTOs.UserDtos;
 namespace Service
 {
     public class UserService:IUserService

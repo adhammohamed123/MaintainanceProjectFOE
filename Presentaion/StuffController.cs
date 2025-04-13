@@ -1,14 +1,14 @@
-﻿using Service.Services;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Service.DTOs;
-using Microsoft.AspNetCore.Authorization;
-using System.Threading.Tasks;
+using Service.DTOs.UserDtos;
+using Service.Services;
 
 namespace Presentaion
 {
-   // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
 	[Route("api/Users")]
+    
 	public class UserController : ControllerBase
 	{
 		protected readonly IServiceManager service;
@@ -19,6 +19,7 @@ namespace Presentaion
 		}
 
 		[HttpGet]
+        [Authorize]
 		public IActionResult GetAlls()
 		{
 			var data = service.UserService.GetAllUser(trackchanges: false).ToList();
@@ -80,6 +81,7 @@ namespace Presentaion
 
     [ApiController]
     [Route("api/Specializations")]
+    [Authorize]
     public class SpecializationsController : ControllerBase
     {
         protected readonly IServiceManager service;

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion
 {
-//	[Authorize]
+	[Authorize]
 	[ApiController]
 	[Route("api/Failures")]
 	public class FailureController : ControllerBase

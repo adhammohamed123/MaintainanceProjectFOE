@@ -38,7 +38,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -66,27 +67,31 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("CPU")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("CreatedByUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<byte>("DeviceStatus")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("DomainIDIfExists")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("GPU")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -95,36 +100,49 @@ namespace FOE.Maintainance.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("MAC")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("OfficeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Owner")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneNmber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("RAMTotal")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedUserId");
 
+                    b.HasIndex("DomainIDIfExists");
+
                     b.HasIndex("LastModifiedUserId");
 
+                    b.HasIndex("MAC")
+                        .IsUnique();
+
                     b.HasIndex("OfficeId");
+
+                    b.HasIndex("Owner");
 
                     b.ToTable("Devices");
                 });
@@ -139,21 +157,24 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("CreatedByUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("Delievry")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("DelievryPhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<int>("DeviceId")
                         .HasColumnType("int");
@@ -161,24 +182,31 @@ namespace FOE.Maintainance.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDelivered")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedUserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<byte>("MaintainLocation")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("MaintainerId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ReceiverID")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<byte>("State")
                         .HasColumnType("tinyint");
@@ -186,6 +214,8 @@ namespace FOE.Maintainance.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedUserId");
+
+                    b.HasIndex("Delievry");
 
                     b.HasIndex("DeviceId");
 
@@ -211,7 +241,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -252,7 +283,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("RegionId")
                         .HasColumnType("int");
@@ -303,7 +335,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -325,7 +358,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -359,7 +393,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -369,7 +404,8 @@ namespace FOE.Maintainance.Migrations
             modelBuilder.Entity("Core.Entities.User", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -399,7 +435,8 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -453,20 +490,20 @@ namespace FOE.Maintainance.Migrations
                         {
                             Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cbf75025-4771-42c0-8e60-72ccc445ad0a",
+                            ConcurrencyStamp = "7ef7f7fe-f702-4170-8849-8e0cfbf459dd",
                             DepartmentId = 1,
                             Email = "adhammo909@gmail.com",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
                             Name = "ElD0ma",
-                            NormalizedUserName = "SUPER",
-                            PasswordHash = "SuperAdmin123",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOKWQdOxYfgaGx2jYbcvLaY1z/2AqfMnFYm7AauomTg4pYKhU5PYNeZkZD2Mjvf/kg==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "f1a18f2c-7251-44f8-9b7c-e62a713e179f",
+                            SecurityStamp = "cf654378-dcc8-4352-9ed2-b72a36cb0d4a",
                             TwoFactorEnabled = false,
-                            UserName = "Super"
+                            UserName = "Admin"
                         });
                 });
 
@@ -552,7 +589,7 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
 
@@ -574,7 +611,7 @@ namespace FOE.Maintainance.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -586,7 +623,7 @@ namespace FOE.Maintainance.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
@@ -596,12 +633,19 @@ namespace FOE.Maintainance.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
+                            RoleId = "41DE9DCE-5A19-4C25-B336-8BA113BC9886"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -623,7 +667,7 @@ namespace FOE.Maintainance.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("SpecializationsId", "UserId");
 

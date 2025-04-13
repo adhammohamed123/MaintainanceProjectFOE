@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection.Metadata;
 
 namespace Contracts.Base
@@ -8,6 +9,7 @@ namespace Contracts.Base
     {
         public int Id { get; set; }
         public bool IsDeleted { get; set; }
+        [MaxLength(50)]
         public string Name { get; set; }
     }
 
