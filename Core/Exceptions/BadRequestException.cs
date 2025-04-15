@@ -65,6 +65,14 @@ namespace Core.Exceptions
         {
         }
     }
+    public sealed class PasswordNotCorrectBadRequestException: BadRequestException
+    {
+        public PasswordNotCorrectBadRequestException(string name)
+            : base($"كلمة المرور غير صحيحة للمستخدم {name}")
+        //: base($"Password Not Correct For User {name}!")
+        {
+        }
+    }
     public sealed class CannotUpdateMaintainanceRecordWhileItIsDone: BadRequestException
     {
         public CannotUpdateMaintainanceRecordWhileItIsDone(int maintainId)

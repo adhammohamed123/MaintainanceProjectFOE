@@ -29,7 +29,7 @@ namespace Presentaion
             var data = service.OfficeService.GetOfficeBasedOnId(regionId,gateId,deptId, officeId, false);
             return Ok(data);
         }
-      //  [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(int regionId, int gateId, int deptId,string officeName)
         {
@@ -38,7 +38,7 @@ namespace Presentaion
             return CreatedAtAction(nameof(GetOne), new { regionId, gateId, deptId, officeId = result.Id }, result);
             // return CreatedAtRoute("GetOffice", new { regionId, gateId, deptId, officeId = result.Id }, result);
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{officeId}")]
 		public async Task<IActionResult> Delete(int regionId, int gateId, int deptId, int officeId)
 		{

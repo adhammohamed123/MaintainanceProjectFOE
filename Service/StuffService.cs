@@ -50,8 +50,11 @@ namespace Service
 
 		public IQueryable<User> GetAllUser(bool trackchanges)
 		=> repository.UserRepo.GetAllUser(trackchanges);
+        public IQueryable<UserDto> GetAllUsersNamesAndIds(bool trackchanges)
+        => repository.UserRepo.GetAllUser(trackchanges)
+            .ProjectTo<UserDto>(mapper.ConfigurationProvider);
 
-		public User? GetFromUserById(string id, bool trackchanges)
+        public User? GetFromUserById(string id, bool trackchanges)
 		{
 			var User = GetObjectAndCheckExistance(id, trackchanges);
 			return User;
@@ -118,7 +121,17 @@ namespace Service
             repository.UserRepo.associateUserWithSpecialization(user, specialization);
             await repository.SaveAsync();
         }
+        public async Task<IdentityResult> changePassword( ChangeUserPasswordDto changeUserPasswordDto)
+        {
+           var user = await _userManager.FindByIdAsync(changeUserPasswordDto.UserId);
+            if (user == null)
+                throw new UserNotFoundException(changeUserPasswordDto.UserId);
 
+           var token=await  _userManager.GeneratePasswordResetTokenAsync(user);
+            var operationResult =await _userManager.ResetPasswordAsync(user, token, changeUserPasswordDto.NewPassword);
+          
+            return operationResult;
+        }
 
         #region Private Helper methods
         private SigningCredentials GetSigningCredentials()
@@ -205,6 +218,9 @@ namespace Service
             }
             return User;
         }
+
+      
+
         #endregion
 
 

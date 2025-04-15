@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Presentaion.Attributes;
 using Service.DTOs.UserDtos;
 using Service.Services;
+using System.Threading.Tasks;
 
 namespace Presentaion
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
 	[Route("api/Users")]
     
@@ -18,11 +21,18 @@ namespace Presentaion
 			this.service = service;
 		}
 
-		[HttpGet]
-        [Authorize]
-		public IActionResult GetAlls()
+        [HttpGet("UsersNamesWithIds")]
+        public async Task<IActionResult> Get() { 
+        
+         var data=  await service.UserService.GetAllUsersNamesAndIds(trackchanges: false).ToListAsync();
+            return Ok(data);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+		public async Task<IActionResult> GetAlls()
 		{
-			var data = service.UserService.GetAllUser(trackchanges: false).ToList();
+			var data = await service.UserService.GetAllUser(trackchanges: false).ToListAsync();
 			return Ok(data);
 		}
 
@@ -32,6 +42,7 @@ namespace Presentaion
 			var data = service.UserService.GetFromUserById(UserId, trackchanges: false);
 			return Ok(data);
 		}
+        [Authorize(Roles = "Admin")] 
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
@@ -69,6 +80,24 @@ namespace Presentaion
             var tokenDto = await service.UserService.CreateToken(populateExp: true);
             return Ok(tokenDto);
         }
+        // change password for account and user account
+        [Authorize(Roles ="Admin")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangeUserPasswordDto userForChangePassword)
+        {
+            var result = await service.UserService.changePassword(userForChangePassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.TryAddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+            return NoContent();
+        }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{UserId}")]
 		public async Task<IActionResult> Delete(string UserId)
 		{
@@ -76,42 +105,4 @@ namespace Presentaion
 			return NoContent();
 		}
 	}
-
-
-
-    [ApiController]
-    [Route("api/Specializations")]
-    [Authorize]
-    public class SpecializationsController : ControllerBase
-    {
-        protected readonly IServiceManager service;
-        public SpecializationsController(IServiceManager service)
-        {
-            this.service = service;
-        }
-        [HttpGet]
-        public IActionResult GetAlls()
-        {
-            var data = service.SpecializationService.GetAllSpecializations(trackchanges: false).ToList();
-            return Ok(data);
-        }
-        [HttpGet("{SpecializationId}")]
-        public IActionResult GetSpecialization(int SpecializationId)
-        {
-            var data = service.SpecializationService.GetSpecializationById(SpecializationId, trackchanges: false);
-            return Ok(data);
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateSpecialization([FromBody] string specializationName)
-        {
-            var specialization = await service.SpecializationService.CreateSpecialization(specializationName);
-            return CreatedAtAction(nameof(GetSpecialization), new { SpecializationId = specialization.Id }, specialization);
-        }
-        [HttpDelete("{SpecializationId}")]
-        public async Task<IActionResult> Delete(int SpecializationId)
-        {
-            await service.SpecializationService.DeleteSpecialization(SpecializationId);
-            return NoContent();
-        }
-    }
 }

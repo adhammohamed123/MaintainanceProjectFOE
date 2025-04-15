@@ -9,4 +9,10 @@ namespace Service.DTOs.UserDtos
         [Required(ErrorMessage = "Password name is required")]
         public string? Password { get; init; }
     }
+
+    public record UserDto
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
 }

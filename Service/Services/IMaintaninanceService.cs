@@ -1,10 +1,7 @@
 ﻿using Core.Entities;
 using Core.Entities.Enums;
 using Core.Features;
-using Microsoft.AspNetCore.Identity;
-using Service.DTOs;
 using Service.DTOs.MaintainanceDtos;
-using Service.DTOs.UserDtos;
 namespace Service.Services
 {
 
@@ -21,28 +18,5 @@ namespace Service.Services
         Task MakeDeviceDone(int MaintainId,string userId);
         Task ChangeFailureStatus(int MaintainId, int FailureId, FailureActionDone status); 
         Task DeleteMaintain(int MaintainId,string userId);
-    }
-  
-    
-    
-    public interface IUserService
-    {
-		IQueryable<User> GetAllUser(bool trackchanges);
-		User? GetFromUserById(string id, bool trackchanges);
-		//Task<NameWithIdentifierDto> CreateUser(string name);
-        Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration);
-        Task<bool> ValidateUser(UserForAuthenticationDto userForAuth);
-        Task<TokenDto> CreateToken(bool populateExp);
-        Task<TokenDto> RefreshToken(TokenDto tokenDto);
-        Task DeleteUser(string id,bool trackchanges);
-        Task AssociateUserWithSpecialization(string userId, int specializationId);
-
-    }
-    public interface ISpecializationService
-    {
-        IQueryable<NameWithIdentifierDto> GetAllSpecializations(bool trackchanges);
-        NameWithIdentifierDto? GetSpecializationById(int id, bool trackchanges);
-        Task<NameWithIdentifierDto> CreateSpecialization(string specializationName);
-        Task DeleteSpecialization(int id);
     }
 }

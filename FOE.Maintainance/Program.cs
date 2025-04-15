@@ -63,22 +63,22 @@ builder.Services.AddSwaggerGen(s =>
         }
         });
 });
-builder.Services.AddHttpsRedirection(options =>
+/*builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 7193;
-});
+});*/
+builder.WebHost.UseUrls("http://*:9990");
+
 var app = builder.Build();
 
 app.HandleExceptions();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
-app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
+//app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();

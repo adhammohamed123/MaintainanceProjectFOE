@@ -38,7 +38,7 @@ namespace Presentaion
            var data=  service.GateService.GetSpecificGate(regionId, gateId, false);
             return Ok(data);
         }
-     //   [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateNewGate(int regionId,[FromBody]string gateName)
         {
@@ -47,7 +47,7 @@ namespace Presentaion
             return CreatedAtAction(nameof(GetOne), new { regionId, gateId = gate.Id }, gate);
             // return CreatedAtRoute("GetGateBasedOnRegionId", new {regionId, gateId = gate.Id}, gate);
         }
-       // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{gateId}")]
 		public async Task<IActionResult> DeleteGate(int regionId, int gateId)
 		{

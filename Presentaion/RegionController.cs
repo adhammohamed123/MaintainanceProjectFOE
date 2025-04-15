@@ -34,7 +34,7 @@ namespace Presentaion
             return Ok(data);
         }
 
-      //  [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] string name)
         {
@@ -42,7 +42,7 @@ namespace Presentaion
             return CreatedAtAction(nameof(GetRegion), new { regionId = newRegion.Id }, newRegion);
             //return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
         }
-      //  [Authorize(Roles= "Admin")]
+        [Authorize(Roles= "Admin")]
         [HttpDelete("{regionId}")]
 		public async Task<IActionResult> Delete(int regionId)
 		{

@@ -30,7 +30,7 @@ namespace Presentaion
 			var data = service.FailureService.GetById(failureId, trackchanges: false);
 			return Ok(data);
 		}
-		//[Authorize(Roles = "Admin")]
+		[Authorize(Roles = "Admin")]
         [HttpPost]
 		public async Task<IActionResult> Create([FromBody] string name)
 		{
@@ -38,7 +38,7 @@ namespace Presentaion
 			return CreatedAtAction(nameof(GetFailure), new { failureId = newFailure.Id }, newFailure);
             //return CreatedAtRoute("GetFailureBasedOnId", new { failureId = newFailure.Id }, newFailure);
         }
-       // [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{failureId}")]
 		public async Task<IActionResult> Delete(int failureId)
 		{

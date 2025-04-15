@@ -95,6 +95,8 @@ namespace Presentaion
 			return NoContent();
 		}
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int id)
 		{
 			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

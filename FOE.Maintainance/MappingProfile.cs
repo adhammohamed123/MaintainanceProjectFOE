@@ -41,5 +41,8 @@ public class MappingProfile:Profile
             op=>op.MapFrom(s=>s.FailureMaintains.Select(h=> new FailureMaintain() 
             { FailureId = h.id, DeviceFailureHistoryId = s.Id,FailureActionDone = h.State }) ));
 
+        CreateMap<User, UserDto>();
+            
+
     }
 }
