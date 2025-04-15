@@ -35,8 +35,11 @@ namespace Service
         public async Task DeleteOffice(int regionId, int gateId, int deptId, int officeId, bool trackchanges)
         {
             CheckParentExistance(regionId, gateId, deptId, trackchanges);
-           var office=  GetObjectAndCheckExistance(deptId, officeId, trackchanges);
-		  	repository.OfficeRepo.DeleteOffice(office);
+            var office=  GetObjectAndCheckExistance(deptId, officeId, trackchanges);
+          var ifOfficeHasDevices = repository.DeviceRepo.GetAllRegisteredDevicesInSpecificOffice(officeId, trackchanges: false).Count() > 0;
+            if (ifOfficeHasDevices)
+                throw new CannotDeleteParentObjectThatHasChildrenException(office.Name);
+            repository.OfficeRepo.DeleteOffice(office);
 		   await repository.SaveAsync();
 		}
 

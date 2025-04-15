@@ -59,7 +59,7 @@ namespace FOE.Maintainance.Extensions
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 10;
-                o.User.RequireUniqueEmail = true;
+                o.User.RequireUniqueEmail = false;
             })
             .AddEntityFrameworkStores<FoeMaintainContext>()
             .AddDefaultTokenProviders();

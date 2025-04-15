@@ -34,8 +34,13 @@ namespace Service
 
 		public async Task DeleteRegionAsync(int id)
 		{
-		  var region = GetObjectAndCheckExistance(id, trackchanges: true);
-			repository.RegionRepo.DeleteRegion(region);
+		   var region = GetObjectAndCheckExistance(id, trackchanges: true);
+            var ifRegionHasGates = repository.GateRepo.GetAllGates(region.Id, trackchanges: false).Count()>0;
+            if (ifRegionHasGates)
+            {
+                throw new CannotDeleteParentObjectThatHasChildrenException(region.Name);
+            }
+            repository.RegionRepo.DeleteRegion(region);
 			await repository.SaveAsync();
 		}
 

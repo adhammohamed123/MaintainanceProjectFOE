@@ -34,7 +34,10 @@ namespace Service
 		{
 			CheckParentExistance(regionId, gateId, deptId, officeId,trackchanges);
 			var deviceEntity = GetObjectAndCheckExistance(officeId, device, trackchanges);
-			repository.DeviceRepo.DeleteDevice(deviceEntity,UserID);
+			var ifDeviceHasMaintainHistory = repository.MaintaninanceRepo.GetDeviceFailureHistoriesByDeviceId(deviceEntity.Id, trackchanges: false).Count() > 0;
+            if (ifDeviceHasMaintainHistory)
+                throw new CannotDeleteParentObjectThatHasChildrenException(deviceEntity.MAC);
+            repository.DeviceRepo.DeleteDevice(deviceEntity,UserID);
 			await repository.SaveAsync();
 		}
 

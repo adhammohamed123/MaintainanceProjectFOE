@@ -94,6 +94,13 @@ namespace Presentaion
 			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity,userId);
 			return NoContent();
 		}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _service.MaintaninanceService.DeleteMaintain(id, userId);
+            return NoContent();
+        }
 
-	}
+    }
 }

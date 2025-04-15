@@ -12,7 +12,12 @@ namespace Repository
 		{
 		}
 
-		public PagedList<DeviceFailureHistory> GetDeviceFailureHistories(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
+		public void DeleteMaintainance(DeviceFailureHistory deviceFailureHistory,string userId)
+		{
+			deviceFailureHistory.LastModifiedUserId = userId;
+            SoftDelete(deviceFailureHistory);
+		}
+        public PagedList<DeviceFailureHistory> GetDeviceFailureHistories(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
 		{
 			//-->		
 			var items =FindAll(trackchanges)

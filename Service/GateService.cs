@@ -56,7 +56,12 @@ namespace Service
 		public async Task DeleteGateAsync(int regionId, int gateId)
 		{
 			var gate = CheckObjectExistanceAndParent(regionId, gateId, trackchanges : true);
-		 	repository.GateRepo.DeleteGate(gate);
+            var ifGateHasDepartments = repository.DepartmentRepo.GetAll(gate.Id, trackchanges: false).Count() > 0;
+            if (ifGateHasDepartments)
+            {
+                throw new CannotDeleteParentObjectThatHasChildrenException(gate.Name);
+            }
+            repository.GateRepo.DeleteGate(gate);
             await repository.SaveAsync();
 		}
 

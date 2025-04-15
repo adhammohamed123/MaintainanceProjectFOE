@@ -13,7 +13,6 @@ namespace Service.DTOs.UserDtos
         public string Password { get; init; }
         [Compare(nameof(Password), ErrorMessage = "كلمة المرور غير متطابقة")]
         public string ConfirmPass { get; set; }
-        public string? Email { get; init; }
         [StringLength(11, MinimumLength = 11)]
         public string? PhoneNumber { get; init; }
         public int DepartmentId { get; set; }

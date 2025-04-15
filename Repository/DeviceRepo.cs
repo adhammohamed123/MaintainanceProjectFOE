@@ -29,7 +29,11 @@ namespace Repository
 		public PagedList<Device> GetAllDevices(DeviceRequestParameters deviceRequestParameters, bool trackchanges)
 		{
 			
-		    var device=FindAll(trackchanges).Include(d => d.Office).ThenInclude(o=>o.Department).ThenInclude(d => d.Gate).ThenInclude(g => g.Region)
+		    var device=FindAll(trackchanges)
+				.Include(d => d.Office)
+				.ThenInclude(o=>o.Department)
+				.ThenInclude(d => d.Gate)
+				.ThenInclude(g => g.Region)
 				.Search(deviceRequestParameters.SearchTerm,deviceRequestParameters.SearchOptions)
                 .filter(deviceRequestParameters.RegionId, deviceRequestParameters.GateId, deviceRequestParameters.DeptId, deviceRequestParameters.OfficeId)
 				.Sort(deviceRequestParameters.OrderBy)

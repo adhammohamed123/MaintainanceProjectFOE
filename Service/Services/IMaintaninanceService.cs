@@ -19,7 +19,8 @@ namespace Service.Services
         Task SavePartialUpdate(DeviceFailureHistoryDto dto,DeviceFailureHistory entity,string userId);
         Task UpdateMaintainanceRecord(DeviceFailureHistoryDto dto, string userId);
         Task MakeDeviceDone(int MaintainId,string userId);
-        Task ChangeFailureStatus(int MaintainId, int FailureId, FailureActionDone status);
+        Task ChangeFailureStatus(int MaintainId, int FailureId, FailureActionDone status); 
+        Task DeleteMaintain(int MaintainId,string userId);
     }
   
     

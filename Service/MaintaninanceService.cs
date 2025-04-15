@@ -190,5 +190,16 @@ namespace Service
             maintain.FailureActionDone = status;
             await repository.SaveAsync();
         }
+
+        public async Task DeleteMaintain(int MaintainId, string userId)
+        {
+            var maintain = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(MaintainId, true);
+            if (maintain == null)
+                throw new DeviceFailureHistoryNotFoundException(MaintainId);
+            if (!maintain.IsDelivered)
+				throw new CannotDeleteMaintainanceRecordThatIsNotDelivered(MaintainId);
+			repository.MaintaninanceRepo.DeleteMaintainance(maintain,userId);
+		 	await repository.SaveAsync();
+        }
     }
 }

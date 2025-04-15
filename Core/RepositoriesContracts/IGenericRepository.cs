@@ -34,8 +34,8 @@ namespace Core.RepositoryContracts
           IQueryable<DeviceFailureHistory> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges);
           DeviceFailureHistory? GetDeviceFailureHistoryById(int id, bool trackchanges);
           Task RegisterNew(DeviceFailureHistory deviceFailureHistory);
-          
-     	}
+          void DeleteMaintainance(DeviceFailureHistory deviceFailureHistory,string userId);
+    }
 
 
 

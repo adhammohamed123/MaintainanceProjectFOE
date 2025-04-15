@@ -17,6 +17,22 @@ namespace Core.Exceptions
         {
         }
     }
+    public sealed class CannotDeleteMaintainanceRecordThatIsNotDelivered: BadRequestException
+    {
+        public CannotDeleteMaintainanceRecordThatIsNotDelivered(int maintainId)
+            : base($"لا يمكن حذف عملية صيانة {maintainId} لانه لم تم تسليمها")
+        //: base($"Cannot Delete Maintainance Record {maintainId} That Is Not Delivered!")
+        {
+        }
+    }
+    public sealed class CannotDeleteParentObjectThatHasChildrenException: BadRequestException
+    {
+        public CannotDeleteParentObjectThatHasChildrenException(string name)
+            : base($"لا يمكن حذف {name} لانه يحتوي على عناصر فرعية")
+        //: base($"Cannot Delete Parent Object {name} That Has Children!")
+        {
+        }
+    }
     public sealed class CannotDeliverDeviceThatIsNotAssignedToAnyone : BadRequestException
     {
         public CannotDeliverDeviceThatIsNotAssignedToAnyone()

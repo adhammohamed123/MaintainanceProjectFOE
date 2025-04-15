@@ -36,6 +36,11 @@ namespace Service
 		{
 			CheckParentExistance(regionId, gateId, trakchanages);
            var dept=   GetObjectAndCheckExistance(gateId, deptId,trakchanages);
+            var ifDeptHasGates = repository.GateRepo.GetAllGates(regionId, trakchanages).Count() > 0;
+            if (ifDeptHasGates)
+            {
+                throw new CannotDeleteParentObjectThatHasChildrenException(dept.Name);
+            }
             repository.DepartmentRepo.DeleteDepartment(dept);
             await repository.SaveAsync();
 		}
