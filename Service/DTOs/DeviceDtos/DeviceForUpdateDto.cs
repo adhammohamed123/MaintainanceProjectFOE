@@ -22,7 +22,8 @@ namespace Service.DTOs.DeviceDtos
         public string GPU { get; set; }
         [MaxLength(8)]
         public string RAMTotal { get; set; }
-        public DeviceStatus DeviceStatus { get; set; }
+       // public DeviceStatus DeviceStatus { get; set; }
+       
 
 
     }

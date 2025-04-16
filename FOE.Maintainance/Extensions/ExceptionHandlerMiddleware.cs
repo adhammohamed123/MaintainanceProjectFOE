@@ -26,7 +26,11 @@ namespace FOE.Maintainance.Extensions
                             _ => StatusCodes.Status500InternalServerError
                         };
                         context.Response.StatusCode = statuscode;
-                       await   context.Response.WriteAsJsonAsync(new Error(statuscode,errorOccured.Error.Message));
+                            context.Response.ContentType = "application/json";
+                       // if(errorOccured.Error.InnerException is not null)
+                          //  await context.Response.WriteAsJsonAsync(new Error(statuscode, errorOccured.Error.InnerException.Message));
+                       // else
+                         await   context.Response.WriteAsJsonAsync(new Error(statuscode,errorOccured.Error.Message));
                     }
                 });
             });

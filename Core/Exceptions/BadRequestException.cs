@@ -65,6 +65,14 @@ namespace Core.Exceptions
         {
         }
     }
+    public sealed class DeviceAlreadyExistsException : BadRequestException
+    {
+        public DeviceAlreadyExistsException(string name)
+            : base($"الجهاز {name} موجود بالفعل")
+        //: base($"Device {name} Already Exists!")
+        {
+        }
+    }
     public sealed class PasswordNotCorrectBadRequestException: BadRequestException
     {
         public PasswordNotCorrectBadRequestException(string name)

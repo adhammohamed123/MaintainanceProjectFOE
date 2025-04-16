@@ -1,19 +1,18 @@
-﻿using AutoMapper;
-using Contracts.Base;
-using Core.RepositoryContracts;
-using Service.DTOs;
-using Service.Services;
-using Core.Entities;
+﻿using Service.DTOs.UserDtos;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Contracts.Base;
+using Core.Entities;
 using Core.Exceptions;
+using Core.RepositoryContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Service.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Security.Cryptography;
-using Service.DTOs.UserDtos;
+using System.Text;
 namespace Service
 {
     public class UserService:IUserService

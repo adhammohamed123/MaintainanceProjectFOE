@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using NLog;
 using Presentaion.Attributes;
+using Repository;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +23,6 @@ builder.Services.AddControllers(cofig =>
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 })
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
-
 builder.Services.AddAuthentication();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.ConfigureCORS()

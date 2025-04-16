@@ -3,6 +3,7 @@ using Contracts.Base;
 using Core.Entities;
 using Core.Entities.Enums;
 using Core.Features;
+using Repository;
 using Service.DTOs;
 using Service.DTOs.DeviceDtos;
 using Service.DTOs.MaintainanceDtos;
@@ -14,6 +15,7 @@ public class MappingProfile:Profile
 {
     public MappingProfile()
     {
+        
         CreateMap<SoftDeletedIdentityModel, NameWithIdentifierDto>();
         CreateMap<Device, DeviceDto>()
             .ForMember(d => d.Office, opt => opt.MapFrom(src => new NameWithIdentifierDto(src.OfficeId, src.Office.Name)))
@@ -22,13 +24,17 @@ public class MappingProfile:Profile
             .ForMember(d => d.Region, opt => opt.MapFrom(src => new NameWithIdentifierDto(src.Office.Department.Gate.RegionId, src.Office.Department.Gate.Region.Name)));
 
         CreateMap<DeviceForCreationDto, Device>();
-		CreateMap<Region, RegionDto>().ReverseMap();
+        CreateMap<DeviceForUpdateDto, Device>();
+            
+        CreateMap<Region, RegionDto>().ReverseMap();
         CreateMap<Gate, GateDto>();
         CreateMap<Department, DepartmentDto>();
         CreateMap<Office, OfficeDto>();
 		CreateMap<DeviceFailureHistoryForCreationDto, DeviceFailureHistory>();
         CreateMap<UserForRegistrationDto, User>();
         CreateMap<DeviceFailureHistory, DeviceFailureHistoryDto>()
+            .ForMember(dest => dest.MAC, opt => opt.MapFrom(src => src.Device.MAC))
+            .ForMember(dest => dest.DomainIDIfExists, opt => opt.MapFrom(src => src.Device.DomainIDIfExists))
                  .ForMember(dest => dest.FailureMaintains, opt =>
                 opt.MapFrom(src => src.FailureMaintains.Select
                 (fm => new FailureDto(fm.FailureId, fm.Failure.Name, fm.FailureActionDone))))
@@ -42,7 +48,8 @@ public class MappingProfile:Profile
             { FailureId = h.id, DeviceFailureHistoryId = s.Id,FailureActionDone = h.State }) ));
 
         CreateMap<User, UserDto>();
-            
-
+       
     }
+
+    public FoeMaintainContext Context { get; }
 }

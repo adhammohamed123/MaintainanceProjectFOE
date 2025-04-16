@@ -4,6 +4,8 @@ using Core.Entities;
 using Core.Exceptions;
 using Core.Features;
 using Core.RepositoryContracts;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Service.DTOs.DeviceDtos;
 using Service.Services;
 namespace Service
@@ -25,8 +27,11 @@ namespace Service
 		{
 			CheckParentExistance(regionId, gateId, deptId, officeId, trackchanges);
 			var deviceEntity = mapper.Map<Device>(device);
-			await  repository.DeviceRepo.CreateDevice(officeId, deviceEntity,UserID);
-	        await  repository.SaveAsync();
+			if(repository.DeviceRepo.GetAllDevices(new DeviceRequestParameters(), trackchanges)
+				.Any(x => x.MAC == deviceEntity.MAC))
+                throw new DeviceAlreadyExistsException(deviceEntity.MAC);
+            await  repository.DeviceRepo.CreateDevice(officeId, deviceEntity,UserID);
+			await  repository.SaveAsync();
 			return mapper.Map<DeviceDto>(deviceEntity);
 		}
 
@@ -65,10 +70,13 @@ namespace Service
         {
             var Parents= CheckParentExistance(regionId, gateId, deptId, officeId, false);
             var device = GetObjectAndCheckExistance(officeId, deviceForUpdateDto.Id, true);
-			mapper.Map(deviceForUpdateDto, device);
+            if (repository.DeviceRepo.GetAllDevices(new DeviceRequestParameters(), false)
+                .Any(x => x.MAC == device.MAC && x.Id!=device.Id))
+                throw new DeviceAlreadyExistsException(deviceForUpdateDto.MAC);
+            mapper.Map(deviceForUpdateDto, device);
 			device.LastModifiedUserId = userId;
-			device.Office = Parents.office;
-            device.OfficeId = Parents.office.Id;
+			//device.Office = Parents.office;
+            //device.OfficeId = Parents.office.Id;
             await repository.SaveAsync();
         }
 
