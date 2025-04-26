@@ -6,11 +6,11 @@ namespace Repository
 {
     public class GateRepo : BaseRepository<Gate>, IGateRepo
     {
-        private readonly FoeMaintainContext context;
+        //private readonly FoeMaintainContext context;
 
         public GateRepo(FoeMaintainContext context) : base(context)
         {
-            this.context = context;
+            //this.context = context;
         }
         public bool ChackExistance(string name,int RegionId)
         => context.Gates.Any(r => r.Name.Equals(name)&&r.RegionId.Equals(RegionId));

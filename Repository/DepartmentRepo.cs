@@ -5,11 +5,11 @@ namespace Repository
 {
     public class DepartmentRepo : BaseRepository<Department>, IDepartmentRepo
     {
-        private readonly FoeMaintainContext context;
+        //private readonly FoeMaintainContext context;
 
         public DepartmentRepo(FoeMaintainContext context) : base(context)
         {
-            this.context = context;
+            //this.context = context;
         }
 
         public bool ChackExistance(string name, int GateId)
