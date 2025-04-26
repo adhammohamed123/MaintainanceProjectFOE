@@ -35,7 +35,8 @@ builder.Services.ConfigureCORS()
 .ConfigureServiceManager()
 .ConfigureIdentity()
 .ConfigureJWT(builder.Configuration);
-/*builder.Services.AddEndpointsApiExplorer();
+/*
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 */
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -95,7 +96,7 @@ builder.Services.AddSwaggerGen(s =>
 {
     options.HttpsPort = 7193;
 });*/
-//builder.WebHost.UseUrls("http://*:9990");
+builder.WebHost.UseUrls("http://*:9990");
 
 var app = builder.Build();
 
@@ -103,6 +104,7 @@ app.HandleExceptions();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+#region Scalar 
 //app.UseSwagger(options =>
 //{
 //   // options.RouteTemplate = "/openapi/{documentName}.json";
@@ -121,6 +123,7 @@ app.UseSwaggerUI();
 //            bearer.Token = "your-bearer-token";
 //        });
 //    });
+#endregion
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
