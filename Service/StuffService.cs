@@ -165,7 +165,7 @@ namespace Service
             issuer: jwtSettings["validIssuer"],
             audience: jwtSettings["validAudience"],
             claims: claims,
-            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+            expires: DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["expires"])),
             signingCredentials: signingCredentials
             );
             return tokenOptions;

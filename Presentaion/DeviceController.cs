@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Presentaion.Attributes;
 using Service.DTOs.DeviceDtos;
+using Microsoft.AspNetCore.Http;
+using Core.Entities.ErrorModel;
 
 namespace Presentaion
 {
@@ -33,7 +35,11 @@ namespace Presentaion
 			var data = service.DeviceService.GetAllDevices(deviceRequestParameters,trackchanges: false);
             var response = new
             {
-                data = data.devices,
+				response=new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, data.devices.ToList()),
+                // Include the devices in the response body
+                // devices = data.devices,
+                // Include pagination info in the response body
+                // data = data.devices,
                 pagination = data.metadata// Include pagination info in the response body
             };
 			//HttpContext.Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(data.metadata));
@@ -44,13 +50,15 @@ namespace Presentaion
 		public IActionResult GetAlldevicesBasedOnOffice(int regionId, int gateId, int deptId, int officeId)
 		{
 			var data = service.DeviceService.GetAllRegisteredDevices(regionId, gateId, deptId, officeId, false);
-			return Ok(data);
+            var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, data.ToList());
+            return Ok(response);
 		}
 		[HttpGet("{deviceId}", Name = "Getdevice")]
 		public IActionResult GetOne(int regionId, int gateId, int deptId, int officeId, int deviceId)
 		{
 			var data = service.DeviceService.GetById(regionId, gateId, deptId, officeId, deviceId, false);
-			return Ok(data);
+			var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, new List<DeviceDto> { data });
+            return Ok(response);
 		}
 
 		[HttpPost]
@@ -60,7 +68,8 @@ namespace Presentaion
 			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // we should pass logged in user id here 
             var result = await service.DeviceService.CreateDevice(regionId, gateId, deptId, officeId, deviceForCreationDto, userId, false);
-			return CreatedAtAction(nameof(GetOne), new { regionId, gateId, deptId, officeId, deviceId = result.Id }, result);
+			var response = new ResponseShape<DeviceDto>(StatusCodes.Status201Created, "تم اضافة الجهاز بنجاح", default, new List<DeviceDto>() { result });
+            return CreatedAtAction(nameof(GetOne), new { regionId, gateId, deptId, officeId, deviceId = result.Id }, response);
             //return CreatedAtRoute("Getdevice", new { regionId, gateId, deptId, deviceId = result.Id }, result);
         }
 		[Authorize(Roles = "Admin")]
@@ -70,7 +79,8 @@ namespace Presentaion
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             // we should pass logged in user id here 
             await service.DeviceService.DeleteDevice(regionId, gateId, deptId, officeId, deviceId, userId, true);
-			return NoContent();
+            var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "تم حذف الجهاز بنجاح", errors: default, data: null);
+            return Ok(response);
 		}
 
 		[HttpPut]
@@ -80,7 +90,8 @@ namespace Presentaion
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             // we should pass logged in user id here 
             await service.DeviceService.UpdateDevice(regionId, gateId, deptId, officeId, deviceForUpdateDto, userId, true);
-            return NoContent();
+            var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "تم تحديث الجهاز بنجاح", errors: default, data: null);
+            return Ok(response);
         }
     }
 }

@@ -30,9 +30,9 @@ namespace Core.Entities
         public string Name { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
-        [ForeignKey(nameof(Department))]
-        public int DepartmentId { get; set; }
-        public Department Department { get; set; }
+        //[ForeignKey(nameof(Department))]
+        //public int DepartmentId { get; set; }
+        //public Department Department { get; set; }
 
     }
 }

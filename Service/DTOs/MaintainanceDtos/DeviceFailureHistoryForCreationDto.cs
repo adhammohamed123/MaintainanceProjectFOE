@@ -7,7 +7,7 @@ namespace Service.DTOs.MaintainanceDtos
     {
         [Required(ErrorMessage = "رقم الجهاز مطلوب")]
         public int DeviceId { get; set; }
-        [Required(ErrorMessage = "رقم المستلم مطلوب")]
+        [Required(ErrorMessage = "رقم معرف المستلم مطلوب ")]
         public string ReceiverID { get; set; }
         public string? MaintainerId { get; set; }
 

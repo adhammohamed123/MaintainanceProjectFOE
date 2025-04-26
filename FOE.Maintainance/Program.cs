@@ -1,13 +1,13 @@
-
 using FOE.Maintainance.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
 using NLog;
 using Presentaion.Attributes;
-using Repository;
 using System.Text.Json.Serialization;
+using Scalar.AspNetCore;
+using Microsoft.OpenApi.Models;
+using Core.Entities.ErrorModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +21,8 @@ builder.Services.AddControllers(cofig =>
 }).AddJsonOptions(opt => {
     opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    opt.JsonSerializerOptions.WriteIndented = true;
+
 })
     .AddApplicationPart(typeof(Presentaion.AssemblyReference).Assembly);
 builder.Services.AddAuthentication();
@@ -33,11 +35,35 @@ builder.Services.ConfigureCORS()
 .ConfigureServiceManager()
 .ConfigureIdentity()
 .ConfigureJWT(builder.Configuration);
+/*builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+*/
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value.Errors.Count > 0)
+            .ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Errors.First().ErrorMessage // Only first error per field
+            );
 
+        var customResponse = new ResponseShape<object>(
+            StatusCode: 400,
+            message: "One or more validation errors occurred.",
+            errors: errors,
+            data: null
+        );
+
+        return new BadRequestObjectResult(customResponse);
+    };
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(s =>
 {
+    s.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
     s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -46,7 +72,7 @@ builder.Services.AddSwaggerGen(s =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-      s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    s.AddSecurityRequirement(new OpenApiSecurityRequirement()
         {
         {
         new OpenApiSecurityScheme
@@ -55,7 +81,7 @@ builder.Services.AddSwaggerGen(s =>
         {
         Type = ReferenceType.SecurityScheme,
         Id = "Bearer"
-      
+
         },
         Name = "Bearer",
         },
@@ -63,22 +89,39 @@ builder.Services.AddSwaggerGen(s =>
         }
         });
 });
+
+
 /*builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 7193;
 });*/
-builder.WebHost.UseUrls("http://*:9990");
+//builder.WebHost.UseUrls("http://*:9990");
 
 var app = builder.Build();
 
 app.HandleExceptions();
 
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
-//app.UseHttpsRedirection();
+//app.UseSwagger(options =>
+//{
+//   // options.RouteTemplate = "/openapi/{documentName}.json";
+//});
+//app.MapScalarApiReference(options =>
+//    {
+//        options.Title = "Future Of Egypt Maintenance System";
+//        options.Theme = ScalarTheme.DeepSpace;
+//        options.DefaultHttpClient = new(ScalarTarget.Http, ScalarClient.Http11);
+//        //options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+//        options.CustomCss = "";
+//        options.ShowSidebar = true;
+//        options.WithPreferredScheme("Bearer").
+//        WithHttpBearerAuthentication(bearer =>
+//        {
+//            bearer.Token = "your-bearer-token";
+//        });
+//    });
+app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
@@ -86,7 +129,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
 NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
 new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
 .Services.BuildServiceProvider()

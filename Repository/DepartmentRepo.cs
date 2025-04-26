@@ -12,6 +12,9 @@ namespace Repository
             this.context = context;
         }
 
+        public bool ChackExistance(string name)
+        => context.Departments.Any(d => d.Name.Equals(name));
+
         public async Task CreateNewDept(int gateId,Department dept)
         {
             dept.GateId = gateId;

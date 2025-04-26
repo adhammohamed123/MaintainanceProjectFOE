@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Core.Entities;
+using Core.Entities.ErrorModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presentaion.Attributes;
@@ -25,7 +28,8 @@ namespace Presentaion
         public async Task<IActionResult> Get() { 
         
          var data=  await service.UserService.GetAllUsersNamesAndIds(trackchanges: false).ToListAsync();
-            return Ok(data);
+            var response=new ResponseShape<UserDto>(StatusCodes.Status200OK, "ok", default, data);
+            return Ok(response);
         }
 
         [Authorize(Roles = "Admin")]
@@ -33,14 +37,17 @@ namespace Presentaion
 		public async Task<IActionResult> GetAlls()
 		{
 			var data = await service.UserService.GetAllUser(trackchanges: false).ToListAsync();
-			return Ok(data);
+            var response = new ResponseShape<User>(StatusCodes.Status200OK, "ok", default, data);
+            return Ok(response);
+            //return Ok(data);
 		}
 
 		[HttpGet("{UserId}", Name = "GetUserBasedOnId")]
 		public IActionResult GetUser(string UserId)
 		{
 			var data = service.UserService.GetFromUserById(UserId, trackchanges: false);
-			return Ok(data);
+            var response = new ResponseShape<User>(StatusCodes.Status200OK, "ok", default, new List<User> { data });
+            return Ok(response);
 		}
         [Authorize(Roles = "Admin")] 
         [HttpPost]
@@ -53,7 +60,11 @@ namespace Presentaion
                 {
                     ModelState.TryAddModelError(error.Code, error.Description);
                 }
-                return BadRequest(ModelState);
+                var errors = ModelState
+                   .SelectMany(kvp => kvp.Value.Errors.Select(e => new { Key = kvp.Key, ErrorMessage = e.ErrorMessage }))
+                   .ToDictionary(x => x.Key, x => x.ErrorMessage);
+                var response = new ResponseShape<User>(StatusCodes.Status400BadRequest, "ok", errors, null);
+                return BadRequest(response);
             }
             return StatusCode(201);
         }
@@ -78,7 +89,8 @@ namespace Presentaion
             if (!await service.UserService.ValidateUser(user))
                 return Unauthorized();
             var tokenDto = await service.UserService.CreateToken(populateExp: true);
-            return Ok(tokenDto);
+            var response = new ResponseShape<TokenDto>(StatusCode: StatusCodes.Status200OK, "ok", default, new List<TokenDto>() { tokenDto });
+            return Ok(response);
         }
         // change password for account and user account
         [Authorize(Roles ="Admin")]
@@ -93,7 +105,11 @@ namespace Presentaion
                 {
                     ModelState.TryAddModelError(error.Code, error.Description);
                 }
-                return BadRequest(ModelState);
+                var errors = ModelState
+                         .SelectMany(kvp => kvp.Value.Errors.Select(e => new { Key = kvp.Key, ErrorMessage = e.ErrorMessage }))
+                         .ToDictionary(x => x.Key, x => x.ErrorMessage);
+                var response = new ResponseShape<User>(StatusCodes.Status400BadRequest, "ok", errors, null);
+                return BadRequest(response);
             }
             return NoContent();
         }
@@ -102,7 +118,9 @@ namespace Presentaion
 		public async Task<IActionResult> Delete(string UserId)
 		{
 			await service.UserService.DeleteUser(UserId, trackchanges:true);
-			return NoContent();
+            var response = new ResponseShape<User>(StatusCodes.Status200OK, "تم حذف المستخدم بنجاح", errors: default, data: null);
+            return Ok(response);
+           // return NoContent();
 		}
 	}
 }

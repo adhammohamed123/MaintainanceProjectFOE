@@ -26,6 +26,8 @@ namespace Service
         public async Task<OfficeDto> CreateNewOffice(int regionId, int gateId, int deptId, string officeName, bool trackchanges)
         {
             CheckParentExistance(regionId, gateId, deptId, trackchanges);
+            if (repository.OfficeRepo.CheckExistance(officeName.Trim()))
+                throw new OfficeAlreadyRegistered(officeName);
             var office = new Office() { Name = officeName };
             await repository.OfficeRepo.CreateNewOffice(deptId, office);
             await repository.SaveAsync();

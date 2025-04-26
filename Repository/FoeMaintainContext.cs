@@ -67,7 +67,8 @@ namespace Repository
                     modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
                 }
             }
-  
+          
+
         }
 
     }

@@ -9,6 +9,30 @@ namespace Core.Exceptions
             
         }
     }
+    public class RegionAlreadyRegistered : BadRequestException
+    {
+        public RegionAlreadyRegistered(string name) : base($"هذا القطاع:{name} موجود بالفعل")
+        {
+        }
+    }
+    public class GateAlreadyRegistered : BadRequestException
+    {
+        public GateAlreadyRegistered(string name) : base($"هذه البوابه :{name} موجودة بالفعل")
+        {
+        }
+    }
+    public class DepartmentAlreadyRegistered : BadRequestException
+    {
+        public DepartmentAlreadyRegistered(string name) : base($"هذه الادارة:{name} موجودة بالفعل")
+        {
+        }
+    }
+    public class OfficeAlreadyRegistered : BadRequestException
+    {
+        public OfficeAlreadyRegistered(string name) : base($"هذا المكتب:{name} موجود بالفعل")
+        {
+        }
+    }
     public sealed class RefreshTokenBadRequest : BadRequestException
     {
         public RefreshTokenBadRequest()

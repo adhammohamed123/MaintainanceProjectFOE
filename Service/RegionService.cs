@@ -26,6 +26,10 @@ namespace Service
 
         public async Task<RegionDto> CreateNewRegionAsync(string name)
         {
+           if(repository.RegionRepo.ChackExistance(name.Trim()))
+            {
+                throw new RegionAlreadyRegistered(name);
+            }
             var region = new Region() { Name = name };
             await repository.RegionRepo.CreateNewRegionAsync(region);
             await repository.SaveAsync();

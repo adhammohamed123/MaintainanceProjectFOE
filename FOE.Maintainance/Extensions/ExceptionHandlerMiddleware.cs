@@ -27,10 +27,20 @@ namespace FOE.Maintainance.Extensions
                         };
                         context.Response.StatusCode = statuscode;
                             context.Response.ContentType = "application/json";
-                       // if(errorOccured.Error.InnerException is not null)
-                          //  await context.Response.WriteAsJsonAsync(new Error(statuscode, errorOccured.Error.InnerException.Message));
-                       // else
-                         await   context.Response.WriteAsJsonAsync(new Error(statuscode,errorOccured.Error.Message));
+                        // if(errorOccured.Error.InnerException is not null)
+                        //  await context.Response.WriteAsJsonAsync(new Error(statuscode, errorOccured.Error.InnerException.Message));
+                        // else
+                        //await   context.Response.WriteAsJsonAsync(new Error(statuscode,errorOccured.Error.Message));
+                        await context.Response.WriteAsJsonAsync(new ResponseShape<object>(
+                            StatusCode: statuscode,
+                            message: errorOccured.Error.Message,
+                            errors: new Dictionary<string, string>
+                            {
+                             { "1", errorOccured.Error.Message }
+                            },
+                            data: null
+                        ));
+
                     }
                 });
             });

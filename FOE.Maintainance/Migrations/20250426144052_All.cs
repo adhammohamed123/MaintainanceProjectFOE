@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FOE.Maintainance.Migrations
 {
     /// <inheritdoc />
-    public partial class AllDBStoreWorkDoneV1 : Migration
+    public partial class All : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -141,7 +141,7 @@ namespace FOE.Maintainance.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -164,8 +164,7 @@ namespace FOE.Maintainance.Migrations
                         name: "FK_AspNetUsers_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -432,6 +431,11 @@ namespace FOE.Maintainance.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "IsDeleted", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "41DE9DCE-5A19-4C25-B336-8BA113BC9886", 0, "45230878-ec1b-4451-8ff2-6d478dc38087", null, "adhammo909@gmail.com", false, false, false, null, "ElD0ma", null, "ADMIN", "AQAAAAIAAYagAAAAEGGU+Xai0VKpA58pH1xJTm3nY9q8mJtS4cykfdAHJJbdobLowb7m/fzDoKoYIq8hag==", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "48716c96-8af0-4dbf-93fd-0d4eb3f4a855", false, "Admin" });
+
+            migrationBuilder.InsertData(
                 table: "Regions",
                 columns: new[] { "Id", "IsDeleted", "Name" },
                 values: new object[,]
@@ -439,6 +443,11 @@ namespace FOE.Maintainance.Migrations
                     { 1, false, "جهاز مستقبل مصر" },
                     { 2, false, "الضبعة" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "41DE9DCE-5A19-4C25-B336-8BA113BC9886", "41DE9DCE-5A19-4C25-B336-8BA113BC9886" });
 
             migrationBuilder.InsertData(
                 table: "Gates",
@@ -454,16 +463,6 @@ namespace FOE.Maintainance.Migrations
                 table: "Departments",
                 columns: new[] { "Id", "GateId", "IsDeleted", "Name" },
                 values: new object[] { 1, 3, false, "النظم و الرقمنة" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DepartmentId", "Email", "EmailConfirmed", "IsDeleted", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "41DE9DCE-5A19-4C25-B336-8BA113BC9886", 0, "7ef7f7fe-f702-4170-8849-8e0cfbf459dd", 1, "adhammo909@gmail.com", false, false, false, null, "ElD0ma", null, "ADMIN", "AQAAAAIAAYagAAAAEOKWQdOxYfgaGx2jYbcvLaY1z/2AqfMnFYm7AauomTg4pYKhU5PYNeZkZD2Mjvf/kg==", null, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "cf654378-dcc8-4352-9ed2-b72a36cb0d4a", false, "Admin" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "41DE9DCE-5A19-4C25-B336-8BA113BC9886", "41DE9DCE-5A19-4C25-B336-8BA113BC9886" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

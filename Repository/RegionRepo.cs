@@ -11,6 +11,11 @@ namespace Repository
         {
         }
 
+        public bool ChackExistance(string name)
+        => context.Regions.Any(r => r.Name.Equals(name));
+            
+        
+
         public async Task CreateNewRegionAsync(Region region) => await Create(region);
 
 		public void DeleteRegion(Region region)

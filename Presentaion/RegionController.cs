@@ -1,5 +1,7 @@
 ﻿using Core.Entities;
+using Core.Entities.ErrorModel;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +26,16 @@ namespace Presentaion
         public IActionResult GetAlls()
         {
             var data = service.RegionService.GetAllRegisteredRegion(trackchanges: false).ToList();
-            return Ok(data);
+            var response = new ResponseShape<RegionDto>(StatusCode:StatusCodes.Status200OK, "ok", default, data);
+            return Ok(response);
         }
 
         [HttpGet("{regionId}", Name ="GetRegionBasedOnId")]
         public IActionResult GetRegion(int regionId)
         {
            var data=  service.RegionService.GetRegionByID(regionId, trackchanges: false);
-            return Ok(data);
+            var response = new ResponseShape<RegionDto>(StatusCodes.Status200OK, "ok", default, new List<RegionDto> { data });
+            return Ok(response);
         }
 
         [Authorize(Roles = "Admin")]
@@ -39,7 +43,8 @@ namespace Presentaion
         public async Task<IActionResult> Create([FromBody] string name)
         {
            var newRegion=  await service.RegionService.CreateNewRegionAsync(name);
-            return CreatedAtAction(nameof(GetRegion), new { regionId = newRegion.Id }, newRegion);
+            var response = new ResponseShape<RegionDto>(StatusCodes.Status201Created, "تم اضافة المنطقه بنجاح", default, new List<RegionDto>() { newRegion });
+            return CreatedAtAction(nameof(GetRegion), new { regionId = newRegion.Id },response);
             //return CreatedAtRoute("GetRegionBasedOnId", new { regionId = newRegion.Id }, newRegion);
         }
         [Authorize(Roles= "Admin")]
@@ -47,7 +52,8 @@ namespace Presentaion
 		public async Task<IActionResult> Delete(int regionId)
 		{
 			await service.RegionService.DeleteRegionAsync(regionId);
-			return NoContent();
+		    var response = new ResponseShape<RegionDto>(StatusCodes.Status200OK, "تم حذف المنطقه بنجاح", errors: default, data: null);
+            return Ok(response);
 		}
         //  [HttpPut]
         // public async Task<IActionResult> Update(int regionId, [FromBody] RegionDto regionDto)

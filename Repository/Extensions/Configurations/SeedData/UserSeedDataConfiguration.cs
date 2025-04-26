@@ -18,7 +18,7 @@ namespace Repository.Extensions.Configurations.SeedData
                 Name = "ElD0ma",
                 NormalizedUserName = "ADMIN",
                 Email = "adhammo909@gmail.com",
-                DepartmentId = 1
+                //DepartmentId = 1
             };
             user.PasswordHash = hasher.HashPassword(user, "SuperAdmin123");
             builder.HasData(user);

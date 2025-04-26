@@ -12,7 +12,8 @@ namespace Repository
         {
             this.context = context;
         }
-
+        public bool ChackExistance(string name)
+        => context.Gates.Any(r => r.Name.Equals(name));
         public async Task CreateNewGate(Gate gate)
         => await Create(gate);
 

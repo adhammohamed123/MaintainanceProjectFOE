@@ -414,7 +414,7 @@ namespace FOE.Maintainance.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -490,18 +490,17 @@ namespace FOE.Maintainance.Migrations
                         {
                             Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7ef7f7fe-f702-4170-8849-8e0cfbf459dd",
-                            DepartmentId = 1,
+                            ConcurrencyStamp = "45230878-ec1b-4451-8ff2-6d478dc38087",
                             Email = "adhammo909@gmail.com",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
                             Name = "ElD0ma",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOKWQdOxYfgaGx2jYbcvLaY1z/2AqfMnFYm7AauomTg4pYKhU5PYNeZkZD2Mjvf/kg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGGU+Xai0VKpA58pH1xJTm3nY9q8mJtS4cykfdAHJJbdobLowb7m/fzDoKoYIq8hag==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "cf654378-dcc8-4352-9ed2-b72a36cb0d4a",
+                            SecurityStamp = "48716c96-8af0-4dbf-93fd-0d4eb3f4a855",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -790,13 +789,9 @@ namespace FOE.Maintainance.Migrations
 
             modelBuilder.Entity("Core.Entities.User", b =>
                 {
-                    b.HasOne("Core.Entities.Department", "Department")
+                    b.HasOne("Core.Entities.Department", null)
                         .WithMany("StuffUsers")
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
+                        .HasForeignKey("DepartmentId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
