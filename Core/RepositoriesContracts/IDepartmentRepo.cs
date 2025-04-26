@@ -8,7 +8,7 @@ namespace Core.RepositoryContracts
         Department GetDeptBasedOnId(int gateId,int deptId, bool trackchanges);
         Task CreateNewDept(int gateId, Department dept);
        void DeleteDepartment(Department department);
-        bool ChackExistance(string name);
+        bool ChackExistance(string name,int GateId);
     }
 
 }

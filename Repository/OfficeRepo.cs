@@ -9,7 +9,7 @@ namespace Repository
         {
         }
 
-        public bool CheckExistance(string name)
+        public bool CheckExistance(string name, int departmentId)
         => context.Offices.Any(o => o.Name.Equals(name));
 
         public async Task CreateNewOffice(int deptId, Office office)

@@ -25,7 +25,9 @@ namespace Service
 
 		public async Task<NameWithIdentifierDto> CreateFailure(string failureName)
 		{
-			var failure = new Failure() { Name = failureName };
+            if (repository.FailureRepo.CheckExistance(failureName.Trim()))
+                throw new FailureAlreadyRegistered(failureName);
+            var failure = new Failure() { Name = failureName };
 		    await	repository.FailureRepo.CreateFailure(failure);
 			await repository.SaveAsync();
 			return mapper.Map<NameWithIdentifierDto>(failure);

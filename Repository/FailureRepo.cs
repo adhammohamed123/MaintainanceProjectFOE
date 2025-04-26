@@ -9,7 +9,10 @@ namespace Repository
         {
         }
 
-		public Task CreateFailure(Failure failure)=> Create(failure);
+        public bool CheckExistance(string name)
+        =>context.Failures.Any(f => f.Name.Equals(name));
+
+        public Task CreateFailure(Failure failure)=> Create(failure);
 
 		public void DeleteFailure(Failure failure) => SoftDelete(failure) ; 
 

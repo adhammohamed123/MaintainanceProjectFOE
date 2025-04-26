@@ -33,6 +33,12 @@ namespace Core.Exceptions
         {
         }
     }
+    public class FailureAlreadyRegistered : BadRequestException
+    {
+        public FailureAlreadyRegistered(string name) : base($"هذا العطل:{name} موجود بالفعل")
+        {
+        }
+    }
     public sealed class RefreshTokenBadRequest : BadRequestException
     {
         public RefreshTokenBadRequest()

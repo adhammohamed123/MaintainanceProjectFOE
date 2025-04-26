@@ -26,7 +26,7 @@ namespace Service
         public async Task<DepartmentDto> CreateNewDepartment(int regionId, int gateId, string deptName,bool trackchanges)
         {
             CheckParentExistance(regionId,gateId, trackchanges);
-            if (repository.DepartmentRepo.ChackExistance(deptName.Trim()))
+            if (repository.DepartmentRepo.ChackExistance(deptName.Trim(),gateId))
             {
                 throw new DepartmentAlreadyRegistered(deptName);
             }

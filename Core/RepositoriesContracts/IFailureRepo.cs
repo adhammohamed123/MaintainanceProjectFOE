@@ -8,6 +8,7 @@ namespace Core.RepositoryContracts
 		Failure? GetById(int id, bool trackchanges);
 		Task CreateFailure(Failure failure);
 		void DeleteFailure(Failure failure);
-	}
+		bool CheckExistance(string name);
+    }
 
 }

@@ -25,7 +25,7 @@ namespace Service
         public async Task<GateDto> CreateNewGateInRegion(int regionId, string gateName,bool trackchanges)
         {
             var region = ChackParentExistance(regionId, trackchanges);
-            if (repository.GateRepo.ChackExistance(gateName.Trim()))
+            if (repository.GateRepo.ChackExistance(gateName.Trim(),regionId))
                 throw new GateAlreadyRegistered(gateName);
             var gate = new Gate() { Name = gateName, RegionId = region.Id };
             await repository.GateRepo.CreateNewGate(gate);
