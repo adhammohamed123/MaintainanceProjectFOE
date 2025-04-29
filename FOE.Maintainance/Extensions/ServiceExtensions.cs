@@ -36,7 +36,8 @@ namespace FOE.Maintainance.Extensions
         {
             services.AddDbContext<FoeMaintainContext>(opt =>
             {
-                opt.UseSqlServer(config.GetConnectionString("FoeMaintainanceDB"), o => o.MigrationsAssembly("FOE.Maintainance"));
+                opt.UseSqlServer(config.GetConnectionString("FoeMaintainanceDB"), o => o.MigrationsAssembly("FOE.Maintainance"))
+                .LogTo(Console.WriteLine,LogLevel.Information);
             });
             return services;
         }
@@ -58,7 +59,7 @@ namespace FOE.Maintainance.Extensions
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
+                o.Password.RequiredLength = 5;
                 o.User.RequireUniqueEmail = false;
             })
             .AddEntityFrameworkStores<FoeMaintainContext>()

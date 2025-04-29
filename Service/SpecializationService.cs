@@ -7,6 +7,7 @@ using Core.RepositoryContracts;
 using Repository;
 using Service.DTOs;
 using Service.Services;
+using System.Threading.Tasks;
 
 namespace Service
 {
@@ -33,14 +34,14 @@ namespace Service
 
         public async Task DeleteSpecialization(int id)
         {
-            var specialization = GetObjectAndCheckExistance(id,true);
+            var specialization = await GetObjectAndCheckExistance(id, true);
             repository.SpecializationRepo.DeleteSpecialization(specialization);
             await repository.SaveAsync();
         }
 
-        private Specialization GetObjectAndCheckExistance(int id,bool trackChanges)
+        private async Task<Specialization> GetObjectAndCheckExistance(int id,bool trackChanges)
         {
-            var specialization = repository.SpecializationRepo.GetSpecializationById(id, trackChanges);
+            var specialization = await repository.SpecializationRepo.GetSpecializationById(id, trackChanges);
             if (specialization == null)
             {
                 throw new SpecializationNotFoundException(id);
@@ -48,13 +49,15 @@ namespace Service
             return specialization;
         }
 
-        public IQueryable<NameWithIdentifierDto> GetAllSpecializations(bool trackchanges)
-        => repository.SpecializationRepo.GetAllSpecializations(trackchanges)
-            .ProjectTo<NameWithIdentifierDto>(mapper.ConfigurationProvider);
-
-        public NameWithIdentifierDto? GetSpecializationById(int id, bool trackchanges)
+        public async Task<IEnumerable<NameWithIdentifierDto>> GetAllSpecializations(bool trackchanges)
         {
-            var specialization = GetObjectAndCheckExistance(id, trackchanges);
+            var result = await repository.SpecializationRepo.GetAllSpecializations(trackchanges);
+
+            return mapper.Map<IEnumerable<NameWithIdentifierDto>>(result);
+        }
+        public async Task<NameWithIdentifierDto?> GetSpecializationById(int id, bool trackchanges)
+        {
+            var specialization = await GetObjectAndCheckExistance(id, trackchanges);
             return mapper.Map<NameWithIdentifierDto>(specialization);
         }
     }

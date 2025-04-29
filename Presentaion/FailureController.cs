@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Service.DTOs.MaintainanceDtos;
 using Core.Entities.ErrorModel;
 using Service.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentaion
 {
@@ -22,23 +23,23 @@ namespace Presentaion
 		}
 
 		[HttpGet]
-		public IActionResult GetAlls()
+		public async Task<IActionResult> GetAlls()
 		{
-			var data = service.FailureService.GetAllFailures(trackchanges: false).ToList();
-			var response = new ResponseShape<NameWithIdentifierDto>(StatusCodes.Status200OK, "ok", default, data);
+			var data =await service.FailureService.GetAllFailures(trackchanges: false);
+			var response = new ResponseShape<NameWithIdentifierDto>(StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
 		}
 
 		[HttpGet("{failureId}", Name = "GetFailureBasedOnId")]
-		public IActionResult GetFailure(int failureId)
+		public async Task<IActionResult> GetFailure(int failureId)
 		{
-			var data = service.FailureService.GetById(failureId, trackchanges: false);
+			var data =await service.FailureService.GetById(failureId, trackchanges: false);
 			var response = new ResponseShape<NameWithIdentifierDto>(StatusCodes.Status200OK, "ok", default, new List<NameWithIdentifierDto> { data });
             return Ok(response);
 		}
 		[Authorize(Roles = "Admin")]
         [HttpPost]
-		public async Task<IActionResult> Create([FromBody] string name)
+		public async Task<IActionResult> Create([FromBody][MaxLength(50, ErrorMessage = "اسم العطل يجب ان لا يتعدي ال 50 حرف")] string name)
 		{
 			var newFailure = await service.FailureService.CreateFailure(name);
 			var response = new ResponseShape<NameWithIdentifierDto>(StatusCodes.Status201Created, "تم اضافة العطل بنجاح", default, new List<NameWithIdentifierDto>() { newFailure });

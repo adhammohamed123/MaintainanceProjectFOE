@@ -30,9 +30,9 @@ namespace Presentaion
 		}
 
 		[HttpGet("/api/Devices")]
-		public IActionResult GetAll([FromQuery]DeviceRequestParameters  deviceRequestParameters)
+		public async Task<IActionResult> GetAll([FromQuery]DeviceRequestParameters  deviceRequestParameters)
 		{
-			var data = service.DeviceService.GetAllDevices(deviceRequestParameters,trackchanges: false);
+			var data = await service.DeviceService.GetAllDevices(deviceRequestParameters,trackchanges: false);
             var response = new
             {
 				response=new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, data.devices.ToList()),
@@ -47,16 +47,16 @@ namespace Presentaion
         }
 
 		[HttpGet]
-		public IActionResult GetAlldevicesBasedOnOffice(int regionId, int gateId, int deptId, int officeId)
+		public async Task<IActionResult> GetAlldevicesBasedOnOffice(int regionId, int gateId, int deptId, int officeId)
 		{
-			var data = service.DeviceService.GetAllRegisteredDevices(regionId, gateId, deptId, officeId, false);
+			var data = await service.DeviceService.GetAllRegisteredDevices(regionId, gateId, deptId, officeId, false);
             var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
 		}
 		[HttpGet("{deviceId}", Name = "Getdevice")]
-		public IActionResult GetOne(int regionId, int gateId, int deptId, int officeId, int deviceId)
+		public async Task<IActionResult> GetOne(int regionId, int gateId, int deptId, int officeId, int deviceId)
 		{
-			var data = service.DeviceService.GetById(regionId, gateId, deptId, officeId, deviceId, false);
+			var data = await service.DeviceService.GetById(regionId, gateId, deptId, officeId, deviceId, false);
 			var response = new ResponseShape<DeviceDto>(StatusCodes.Status200OK, "ok", default, new List<DeviceDto> { data });
             return Ok(response);
 		}

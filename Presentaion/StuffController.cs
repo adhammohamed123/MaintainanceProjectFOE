@@ -27,8 +27,8 @@ namespace Presentaion
         [HttpGet("UsersNamesWithIds")]
         public async Task<IActionResult> Get() { 
         
-         var data=  await service.UserService.GetAllUsersNamesAndIds(trackchanges: false).ToListAsync();
-            var response=new ResponseShape<UserDto>(StatusCodes.Status200OK, "ok", default, data);
+         var data=  await service.UserService.GetAllUsersNamesAndIds(trackchanges: false);
+            var response=new ResponseShape<UserDto>(StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
         }
 
@@ -36,16 +36,16 @@ namespace Presentaion
         [HttpGet]
 		public async Task<IActionResult> GetAlls()
 		{
-			var data = await service.UserService.GetAllUser(trackchanges: false).ToListAsync();
-            var response = new ResponseShape<User>(StatusCodes.Status200OK, "ok", default, data);
+			var data = await service.UserService.GetAllUser(trackchanges: false);
+            var response = new ResponseShape<User>(StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
             //return Ok(data);
 		}
 
 		[HttpGet("{UserId}", Name = "GetUserBasedOnId")]
-		public IActionResult GetUser(string UserId)
+		public async Task<IActionResult> GetUser(string UserId)
 		{
-			var data = service.UserService.GetFromUserById(UserId, trackchanges: false);
+			var data = await service.UserService.GetFromUserById(UserId, trackchanges: false);
             var response = new ResponseShape<User>(StatusCodes.Status200OK, "ok", default, new List<User> { data });
             return Ok(response);
 		}

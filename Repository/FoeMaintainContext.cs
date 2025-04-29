@@ -23,7 +23,10 @@ namespace Repository
 
 
 
-        public FoeMaintainContext(DbContextOptions<FoeMaintainContext> options) : base(options) { }
+        public FoeMaintainContext(DbContextOptions<FoeMaintainContext> options) : base(options) { 
+        
+           // Console.WriteLine(this.Database.pool)
+        }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

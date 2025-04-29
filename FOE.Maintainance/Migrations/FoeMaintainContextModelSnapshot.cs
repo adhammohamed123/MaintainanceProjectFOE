@@ -66,7 +66,6 @@ namespace FOE.Maintainance.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CPU")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -89,7 +88,6 @@ namespace FOE.Maintainance.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("GPU")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -104,7 +102,6 @@ namespace FOE.Maintainance.Migrations
                         .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("MAC")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -120,7 +117,6 @@ namespace FOE.Maintainance.Migrations
                         .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("RAMTotal")
-                        .IsRequired()
                         .HasMaxLength(8)
                         .HasColumnType("nvarchar(8)");
 
@@ -138,7 +134,8 @@ namespace FOE.Maintainance.Migrations
                     b.HasIndex("LastModifiedUserId");
 
                     b.HasIndex("MAC")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[MAC] IS NOT NULL");
 
                     b.HasIndex("OfficeId");
 
@@ -490,17 +487,17 @@ namespace FOE.Maintainance.Migrations
                         {
                             Id = "41DE9DCE-5A19-4C25-B336-8BA113BC9886",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "45230878-ec1b-4451-8ff2-6d478dc38087",
+                            ConcurrencyStamp = "2ae96f96-32c8-47b7-9279-7c4ce9b43cd3",
                             Email = "adhammo909@gmail.com",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
                             Name = "ElD0ma",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGGU+Xai0VKpA58pH1xJTm3nY9q8mJtS4cykfdAHJJbdobLowb7m/fzDoKoYIq8hag==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJA6POA/vkGIqPwzntxQ8UgZoLVakfBj84LLb8iIwU3VxTZKLy50h3aJr3f8D0t9eA==",
                             PhoneNumberConfirmed = false,
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "48716c96-8af0-4dbf-93fd-0d4eb3f4a855",
+                            SecurityStamp = "eb4ca4a1-d29e-4d28-9389-0add70fc7f3b",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });

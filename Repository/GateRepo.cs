@@ -20,8 +20,8 @@ namespace Repository
 		public void DeleteGate(Gate gate)
 		=>SoftDelete(gate);
 
-		public IQueryable<Gate> GetAllGates(int regionId, bool trackchanges)
-        => FindByCondition(g => g.RegionId.Equals(regionId), trackchanges);
+		public async Task<IEnumerable<Gate>> GetAllGates(int regionId, bool trackchanges)
+        => await FindByCondition(g => g.RegionId.Equals(regionId), trackchanges).ToListAsync();
 
        // public IQueryable<Gate> GetAllGatesInGeneral(bool trackchanges)
        //=> FindAll(trackchanges);
@@ -29,7 +29,7 @@ namespace Repository
         //public IQueryable<Department> GetDeparmtentsBasedOnGate(int gate, bool track)
         //=> FindByCondition(g => g.Id.Equals(gate),track).SelectMany(g => g.Departments);
 
-        public Gate GetSpecificGate(int regionId,int gateId, bool trackchanges)
-        => FindByCondition(g=> g.Id.Equals(gateId)&& g.RegionId.Equals(regionId),trackchanges).SingleOrDefault();
+        public async Task<Gate> GetSpecificGate(int regionId,int gateId, bool trackchanges)
+        => await FindByCondition(g=> g.Id.Equals(gateId)&& g.RegionId.Equals(regionId),trackchanges).SingleOrDefaultAsync();
     }
 }

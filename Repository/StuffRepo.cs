@@ -1,6 +1,7 @@
 ﻿using Core.RepositoryContracts;
 using Core.Entities;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -20,10 +21,10 @@ namespace Repository
 		public void DeleteUser(User User)
 		=>SoftDelete(User);
 
-		public IQueryable<User> GetAllUser(bool trackchanges)
-		=>FindAll(trackchanges);
+		public async Task<IEnumerable<User>> GetAllUser(bool trackchanges)
+		=> await FindAll(trackchanges).ToListAsync();
 
-		public User? GetFromUserById(string id, bool trackchanges)
-		=> FindByCondition(s => s.Id.Equals(id), trackchanges).SingleOrDefault();
+		public async Task< User?> GetFromUserById(string id, bool trackchanges)
+		=> await FindByCondition(s => s.Id.Equals(id), trackchanges).SingleOrDefaultAsync();
 	}
 }

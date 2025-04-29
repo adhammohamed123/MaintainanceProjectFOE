@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 namespace Service
 {
     public class UserService:IUserService
@@ -42,20 +43,21 @@ namespace Service
 
 		public async Task DeleteUser(string id, bool trackchanges)
 		{
-			var User = GetObjectAndCheckExistance(id, trackchanges);
+			var User = await GetObjectAndCheckExistance(id, trackchanges);
 			repository.UserRepo.DeleteUser(User);
 			await repository.SaveAsync();
 		}
 
-		public IQueryable<User> GetAllUser(bool trackchanges)
-		=> repository.UserRepo.GetAllUser(trackchanges);
-        public IQueryable<UserDto> GetAllUsersNamesAndIds(bool trackchanges)
-        => repository.UserRepo.GetAllUser(trackchanges)
-            .ProjectTo<UserDto>(mapper.ConfigurationProvider);
-
-        public User? GetFromUserById(string id, bool trackchanges)
+		public async Task<IEnumerable<User>> GetAllUser(bool trackchanges)
+		=> await repository.UserRepo.GetAllUser(trackchanges);
+        public async Task<IEnumerable<UserDto>> GetAllUsersNamesAndIds(bool trackchanges)
+        {
+            var result = await repository.UserRepo.GetAllUser(trackchanges);
+            return mapper.Map<IEnumerable<UserDto>>(result);
+        }
+        public async Task<User?> GetFromUserById(string id, bool trackchanges)
 		{
-			var User = GetObjectAndCheckExistance(id, trackchanges);
+			var User = await GetObjectAndCheckExistance(id, trackchanges);
 			return User;
 		}
 
@@ -102,7 +104,7 @@ namespace Service
 
         public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
         {
-            var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+            var principal =  GetPrincipalFromExpiredToken(tokenDto.AccessToken);
             var user = await _userManager.FindByNameAsync(principal.Identity.Name);
             if (user == null || user.RefreshToken != tokenDto.RefreshToken ||
             user.RefreshTokenExpiryTime <= DateTime.Now)
@@ -113,8 +115,8 @@ namespace Service
 
         public async Task AssociateUserWithSpecialization(string userId, int specializationId)
         { 
-            var user = GetObjectAndCheckExistance(userId, trackchanges: true);
-            var specialization = repository.SpecializationRepo.GetSpecializationById(specializationId, trackchanges: true);
+            var user = await GetObjectAndCheckExistance(userId, trackchanges: true);
+            var specialization = await repository.SpecializationRepo.GetSpecializationById(specializationId, trackchanges: true);
             if (specialization == null)
                 throw new SpecializationNotFoundException(specializationId);
             repository.UserRepo.associateUserWithSpecialization(user, specialization);
@@ -208,9 +210,9 @@ namespace Service
             }
             return principal;
         }
-        private User GetObjectAndCheckExistance(string id, bool trackchanges)
+        private async Task<User> GetObjectAndCheckExistance(string id, bool trackchanges)
         {
-            var User = repository.UserRepo.GetFromUserById(id, trackchanges);
+            var User = await repository.UserRepo.GetFromUserById(id, trackchanges);
             if (User == null)
             {
                 throw new UserNotFoundException(id);

@@ -38,8 +38,8 @@ namespace Service
 
 		public async Task DeleteRegionAsync(int id)
 		{
-		   var region = GetObjectAndCheckExistance(id, trackchanges: true);
-            var ifRegionHasGates = repository.GateRepo.GetAllGates(region.Id, trackchanges: false).Count()>0;
+		   var region = await GetObjectAndCheckExistance(id, trackchanges: true);
+            var ifRegionHasGates =(await repository.GateRepo.GetAllGates(region.Id, trackchanges: false)).Count()>0;
             if (ifRegionHasGates)
             {
                 throw new CannotDeleteParentObjectThatHasChildrenException(region.Name);
@@ -48,20 +48,21 @@ namespace Service
 			await repository.SaveAsync();
 		}
 
-		public IQueryable<RegionDto> GetAllRegisteredRegion(bool trackchanges)
-        => repository.RegionRepo.GetAllRegisteredRegion(trackchanges)
-            .ProjectTo<RegionDto>(mapper.ConfigurationProvider);
-
-        public RegionDto GetRegionByID(int id, bool trackchanges)
+        public async Task<IEnumerable<RegionDto>> GetAllRegisteredRegion(bool trackchanges)
         {
-            var region = GetObjectAndCheckExistance(id,trackchanges);
+            var result = await repository.RegionRepo.GetAllRegisteredRegion(trackchanges);
+            return mapper.Map<IEnumerable<RegionDto>>(result);
+        }
+        public async Task<RegionDto> GetRegionByID(int id, bool trackchanges)
+        {
+            var region =await GetObjectAndCheckExistance(id,trackchanges);
             var regionDto = mapper.Map<RegionDto>(region);
             return regionDto;
         }
 
-		public (Region region, RegionDto regionDto) GetRegionForPartialUpdate(int regionId, bool trackchanges)
+		public async Task<(Region region, RegionDto regionDto)> GetRegionForPartialUpdate(int regionId, bool trackchanges)
 		{
-			var region = GetObjectAndCheckExistance(regionId, trackchanges);
+			var region =await GetObjectAndCheckExistance(regionId, trackchanges);
 			var regionDto = mapper.Map<RegionDto>(region);
 			return (region, regionDto);
 		}
@@ -74,14 +75,14 @@ namespace Service
 
 		public async Task UpdateRegion(int regionId, RegionDto regionDto)
 		{
-			var region = GetObjectAndCheckExistance(regionId, trackchanges: true);
+			var region = await GetObjectAndCheckExistance(regionId, trackchanges: true);
 			mapper.Map(regionDto, region);
             await  repository.SaveAsync();
 		}
 
-		private Region GetObjectAndCheckExistance(int id,bool trackchanges)
+		private async Task<Region> GetObjectAndCheckExistance(int id,bool trackchanges)
         {
-            var region = repository.RegionRepo.GetRegionBasedOnId(id, trackchanges);
+            var region =await repository.RegionRepo.GetRegionBasedOnId(id, trackchanges);
             if (region == null)
                 throw new RegionNotFoundException(id);
             return region;

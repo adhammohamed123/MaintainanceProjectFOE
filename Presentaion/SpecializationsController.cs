@@ -15,15 +15,15 @@ namespace Presentaion
             this.service = service;
         }
         [HttpGet]
-        public IActionResult GetAlls()
+        public async Task<IActionResult> GetAlls()
         {
-            var data = service.SpecializationService.GetAllSpecializations(trackchanges: false).ToList();
+            var data = await service.SpecializationService.GetAllSpecializations(trackchanges: false);
             return Ok(data);
         }
         [HttpGet("{SpecializationId}")]
-        public IActionResult GetSpecialization(int SpecializationId)
+        public async Task<IActionResult> GetSpecialization(int SpecializationId)
         {
-            var data = service.SpecializationService.GetSpecializationById(SpecializationId, trackchanges: false);
+            var data = await service.SpecializationService.GetSpecializationById(SpecializationId, trackchanges: false);
             return Ok(data);
         }
         [Authorize(Roles = "Admin")]

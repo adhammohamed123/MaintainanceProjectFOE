@@ -25,7 +25,7 @@ namespace Service
 
         public async Task<DepartmentDto> CreateNewDepartment(int regionId, int gateId, string deptName,bool trackchanges)
         {
-            CheckParentExistance(regionId,gateId, trackchanges);
+            await CheckParentExistance(regionId,gateId, trackchanges);
             if (repository.DepartmentRepo.ChackExistance(deptName.Trim(),gateId))
             {
                 throw new DepartmentAlreadyRegistered(deptName);
@@ -38,9 +38,9 @@ namespace Service
 
 		public async Task DeleteDepartment(int regionId, int gateId, int deptId, bool trakchanages)
 		{
-			CheckParentExistance(regionId, gateId, trakchanages);
-           var dept=   GetObjectAndCheckExistance(gateId, deptId,trakchanages);
-            var ifDeptHasGates = repository.GateRepo.GetAllGates(regionId, trakchanages).Count() > 0;
+			await CheckParentExistance(regionId, gateId, trakchanages);
+           var dept= await  GetObjectAndCheckExistance(gateId, deptId,trakchanages);
+            var ifDeptHasGates =  (await repository.GateRepo.GetAllGates(regionId, trakchanages)) .Count() > 0;
             if (ifDeptHasGates)
             {
                 throw new CannotDeleteParentObjectThatHasChildrenException(dept.Name);
@@ -49,34 +49,34 @@ namespace Service
             await repository.SaveAsync();
 		}
 
-		public IEnumerable<DepartmentDto> GetAllDepartments(int regionId ,int gateId, bool trakchanages)
+		public async Task<IEnumerable<DepartmentDto>> GetAllDepartments(int regionId ,int gateId, bool trakchanages)
         {
-            CheckParentExistance( regionId,gateId, trakchanages);
-            var depts=  repository.DepartmentRepo.GetAll( gateId, trakchanages);
+            await CheckParentExistance( regionId,gateId, trakchanages);
+            var depts=  await repository.DepartmentRepo.GetAll( gateId, trakchanages);
             return mapper.Map<IEnumerable<DepartmentDto>>(depts);
         }
 
-        public DepartmentDto GetDept(int regionId ,int gateId, int deptId, bool trakchanages)
+        public async Task<DepartmentDto> GetDept(int regionId ,int gateId, int deptId, bool trakchanages)
         {
-            CheckParentExistance(regionId ,gateId, trakchanages);
-            var dept=  GetObjectAndCheckExistance(gateId, deptId, trakchanages);
+           await CheckParentExistance(regionId ,gateId, trakchanages);
+            var dept=  await GetObjectAndCheckExistance(gateId, deptId, trakchanages);
             return mapper.Map<DepartmentDto>(dept);
         }
 
 
-        private (Region region,Gate gate) CheckParentExistance(int regionId,int gateId,bool trackchanges)
+        private async Task<(Region region,Gate gate)> CheckParentExistance(int regionId,int gateId,bool trackchanges)
         {
-            var region = repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
+            var region = await repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
             if(region==null)
                 throw new RegionNotFoundException(regionId);
-            var gate = repository.GateRepo.GetSpecificGate(regionId, gateId, trackchanges);
+            var gate = await repository.GateRepo.GetSpecificGate(regionId, gateId, trackchanges);
             if (gate == null)
                 throw new GateNotFoundException(gateId);
             return (region:region,gate:gate);
         }
-        private Department GetObjectAndCheckExistance(int gateId, int id, bool trackObject)
+        private async Task<Department> GetObjectAndCheckExistance(int gateId, int id, bool trackObject)
         {
-            var deptExists = repository.DepartmentRepo.GetDeptBasedOnId( gateId, id, trackObject);
+            var deptExists = await repository.DepartmentRepo.GetDeptBasedOnId( gateId, id, trackObject);
 
             if (deptExists == null)
                 throw new DepartmentNotFoundException(id);

@@ -26,7 +26,7 @@ namespace Presentaion
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] MaintainanceRequestParameters maintainanceRequestParameters)
 		{
-			var result = _service.MaintaninanceService.GetAllAsync(maintainanceRequestParameters,trackchanges:false);
+			var result = await _service.MaintaninanceService.GetAllAsync(maintainanceRequestParameters,trackchanges:false);
             var response = new
             {
                 response = new ResponseShape<DeviceFailureHistoryDto>(StatusCodes.Status200OK,"Ok",errors:null,data:result.maintainRecords.ToList()),
@@ -39,7 +39,7 @@ namespace Presentaion
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById(int id)
 		{
-			var result = _service.MaintaninanceService.GetByIdAsync(id);
+			var result = await _service.MaintaninanceService.GetByIdAsync(id);
 			var response = new ResponseShape<DeviceFailureHistoryDto>(StatusCodes.Status200OK, "Ok", errors: null, data: new List<DeviceFailureHistoryDto>() { result});
            
 			
@@ -49,7 +49,7 @@ namespace Presentaion
 		[HttpGet("/api/device/{id}/maintainHistory")]
 		public async Task<IActionResult> GetByDeviceId(int id)
 		{
-			var result = _service.MaintaninanceService.GetDeviceFailureHistoriesByDeviceId(id,false);
+			var result = await _service.MaintaninanceService.GetDeviceFailureHistoriesByDeviceId(id, false);
 			var response = new ResponseShape<DeviceFailureHistoryDto>(StatusCodes.Status200OK, "Ok", errors: null, data: result.ToList());
            
             //if (result == null) return NotFound();
@@ -99,7 +99,7 @@ namespace Presentaion
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 
-            var result = _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
+            var result =await _service.MaintaninanceService.GetDeviceFailureHistoryByIdForPartialUpdate(id, true);
 			dto.ApplyTo(result.dto);
 			await _service.MaintaninanceService.SavePartialUpdate(result.dto, result.entity,userId);
             var response = new ResponseShape<DeviceFailureHistoryDto>(StatusCodes.Status200OK, "Ok", errors: null, data: null);

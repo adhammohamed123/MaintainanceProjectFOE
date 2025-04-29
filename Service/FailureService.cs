@@ -36,7 +36,7 @@ namespace Service
 
 		public async Task DeleteFailure(int id)
 		{
-			var failure = repository.FailureRepo.GetById(id, true);
+			var failure = await repository.FailureRepo.GetById(id, true);
 			if (failure == null)
 			{
 				throw new FailureNotFoundException(id);
@@ -45,13 +45,15 @@ namespace Service
 			await repository.SaveAsync();
 		}
 
-		public IQueryable<NameWithIdentifierDto> GetAllFailures(bool trackchanges)
-		=>repository.FailureRepo.GetAllFailures(trackchanges).ProjectTo<NameWithIdentifierDto>(mapper.ConfigurationProvider);
-		
-
-		public NameWithIdentifierDto GetById(int id, bool trackchanges)
+		public async Task<IEnumerable<NameWithIdentifierDto>> GetAllFailures(bool trackchanges)
 		{
-			var faliure=  repository.FailureRepo.GetById(id, trackchanges);
+			var allFauils = await repository.FailureRepo.GetAllFailures(trackchanges);
+			return mapper.Map<IEnumerable<NameWithIdentifierDto>>(allFauils);
+        }
+
+		public async Task<NameWithIdentifierDto> GetById(int id, bool trackchanges)
+		{
+			var faliure= await repository.FailureRepo.GetById(id, trackchanges);
 			if (faliure == null)
 			{
 				throw new FailureNotFoundException( id);

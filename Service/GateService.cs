@@ -6,6 +6,7 @@ using Service.DTOs;
 using Service.Services;
 using Core.Exceptions;
 using Core.Entities;
+using System.Threading.Tasks;
 
 namespace Service
 {
@@ -24,7 +25,7 @@ namespace Service
 
         public async Task<GateDto> CreateNewGateInRegion(int regionId, string gateName,bool trackchanges)
         {
-            var region = ChackParentExistance(regionId, trackchanges);
+            var region = await ChackParentExistance(regionId, trackchanges);
             if (repository.GateRepo.ChackExistance(gateName.Trim(),regionId))
                 throw new GateAlreadyRegistered(gateName);
             var gate = new Gate() { Name = gateName, RegionId = region.Id };
@@ -35,29 +36,29 @@ namespace Service
 
         }
 
-        public IQueryable<GateDto> GetAllGates(int regionId, bool trackchanges)
+        public async Task<IEnumerable<GateDto>> GetAllGates(int regionId, bool trackchanges)
         {
-            ChackParentExistance(regionId,  trackchanges);
-		  return 	repository.GateRepo.GetAllGates(regionId, trackchanges)
-                          .ProjectTo<GateDto>(mapper.ConfigurationProvider);
+              await  ChackParentExistance(regionId,  trackchanges);
+            var allGates = await repository.GateRepo.GetAllGates(regionId, trackchanges);
+             return mapper.Map<IEnumerable <GateDto>>(allGates);  
         }
         //public IQueryable<GateDto> GetAllGatesInGeneral(bool trackchanges)
         // => repository.GateRepo.GetAllGatesInGeneral(trackchanges)
         //    .ProjectTo<GateDto>(mapper.ConfigurationProvider);
         
 
-        public GateDto GetSpecificGate(int regionId, int gateId, bool trackchanges)
+        public async Task<GateDto> GetSpecificGate(int regionId, int gateId, bool trackchanges)
         {
 
-            var gate = CheckObjectExistanceAndParent(regionId, gateId, trackchanges);
+            var gate = await CheckObjectExistanceAndParent(regionId, gateId, trackchanges);
             var gatedto = mapper.Map<GateDto>(gate);
             return gatedto;
         }
 
 		public async Task DeleteGateAsync(int regionId, int gateId)
 		{
-			var gate = CheckObjectExistanceAndParent(regionId, gateId, trackchanges : true);
-            var ifGateHasDepartments = repository.DepartmentRepo.GetAll(gate.Id, trackchanges: false).Count() > 0;
+			var gate = await CheckObjectExistanceAndParent(regionId, gateId, trackchanges: true);
+            var ifGateHasDepartments = (await repository.DepartmentRepo.GetAll(gate.Id, trackchanges: false)) .Count() > 0;
             if (ifGateHasDepartments)
             {
                 throw new CannotDeleteParentObjectThatHasChildrenException(gate.Name);
@@ -68,19 +69,19 @@ namespace Service
 
 
 
-		private Gate CheckObjectExistanceAndParent(int regionId,int gateId, bool trackchanges)
+		private async Task<Gate> CheckObjectExistanceAndParent(int regionId,int gateId, bool trackchanges)
         {
-            var region = ChackParentExistance(regionId, trackchanges);
+            var region = await ChackParentExistance(regionId, trackchanges);
 
-            var gate = repository.GateRepo.GetSpecificGate(regionId, gateId, trackchanges);
+            var gate = await repository.GateRepo.GetSpecificGate(regionId, gateId, trackchanges);
 
             if (gate == null)
                 throw new GateNotFoundException(gateId);
             return gate;
         }
-        private Region ChackParentExistance(int regionId,bool trackchanges)
+        private async Task<Region> ChackParentExistance(int regionId,bool trackchanges)
         {
-            var IsRegionExists = repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
+            var IsRegionExists = await repository.RegionRepo.GetRegionBasedOnId(regionId, trackchanges);
             if (IsRegionExists == null)
                 throw new RegionNotFoundException(regionId);
             return IsRegionExists;

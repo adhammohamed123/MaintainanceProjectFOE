@@ -26,7 +26,7 @@ namespace Repository
 			SoftDelete(device);
 		}
 
-		public PagedList<Device> GetAllDevices(DeviceRequestParameters deviceRequestParameters, bool trackchanges)
+		public Task<PagedList<Device>> GetAllDevices(DeviceRequestParameters deviceRequestParameters, bool trackchanges)
 		{
 			
 		    var device=FindAll(trackchanges)
@@ -38,20 +38,21 @@ namespace Repository
                 .filter(deviceRequestParameters.RegionId, deviceRequestParameters.GateId, deviceRequestParameters.DeptId, deviceRequestParameters.OfficeId)
 				.Sort(deviceRequestParameters.OrderBy)
                 .ToList();
-			return PagedList<Device>.ToPagedList(device, deviceRequestParameters.PageNumber, deviceRequestParameters.PageSize);
-		}
-		public IQueryable<Device> GetAllRegisteredDevicesInSpecificOffice(int officeId, bool trackchanges)
-		=>FindByCondition(d=>d.OfficeId.Equals(officeId), trackchanges);
+			var result = PagedList<Device>.ToPagedList(device, deviceRequestParameters.PageNumber, deviceRequestParameters.PageSize);
+            return Task.FromResult(result);
+        }
+		public async Task<IEnumerable<Device>> GetAllRegisteredDevicesInSpecificOffice(int officeId, bool trackchanges)
+		=>await FindByCondition(d=>d.OfficeId.Equals(officeId), trackchanges).ToListAsync();
 
-		public Device? GetById(int officeId, int id, bool trackchanges)
-		=> FindByCondition(d => d.OfficeId.Equals(officeId) && d.Id.Equals(id), trackchanges)
+		public async Task<Device?> GetById(int officeId, int id, bool trackchanges)
+		=> await FindByCondition(d => d.OfficeId.Equals(officeId) && d.Id.Equals(id), trackchanges)
 			.Include(c => c.Office)
 			.Include(c => c.Office.Department)
 			.Include(c => c.Office.Department.Gate)
 			.Include(c => c.Office.Department.Gate.Region)
-			.SingleOrDefault();
+			.SingleOrDefaultAsync();
 
-        public Device? GetById(int id, bool trackchanges)
-        =>FindByCondition(d=>d.Id.Equals(id), trackchanges).SingleOrDefault();
+        public async Task<Device>? GetById(int id, bool trackchanges)
+        =>await FindByCondition(d=>d.Id.Equals(id), trackchanges).SingleOrDefaultAsync();
     }
 }

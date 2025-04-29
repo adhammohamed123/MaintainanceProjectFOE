@@ -33,7 +33,7 @@ namespace Service
 			var entity = mapper.Map<DeviceFailureHistory>(dto);
 			entity.CreatedByUserId = userId;
 			//entity.State = Core.Entities.Enums.MaintainStatus.WorkingOnIt;
-			var device = repository.DeviceRepo.GetById(entity.DeviceId, true);
+			var device =await repository.DeviceRepo.GetById(entity.DeviceId, true);
 			if (device == null)
 				throw new DeviceNotFoundException(entity.DeviceId);
 			if (device.DeviceStatus == Core.Entities.Enums.DeviceStatus.InMaintain)
@@ -43,7 +43,7 @@ namespace Service
 			foreach (var failureId in dto.FailureIds)
 			{
 				//TODO Optimize this query to get all failures at once
-				var failure = repository.FailureRepo.GetById(failureId, false);
+				var failure =await repository.FailureRepo.GetById(failureId, false);
 				if (failure == null)
 					throw new FailureNotFoundException(failureId);
 
@@ -56,7 +56,7 @@ namespace Service
 			
 			await repository.MaintaninanceRepo.RegisterNew(entity);
 			await repository.SaveAsync();
-			entity = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(entity.Id, false);
+			entity = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(entity.Id, false);
 			var result = mapper.Map<DeviceFailureHistoryDto>(entity);
 			result.MAC = device.MAC;
 			result.DomainIDIfExists = device.DomainIDIfExists;
@@ -71,25 +71,25 @@ namespace Service
 			//return mapper.Map<DeviceFailureHistoryDto>(entity);
 		}
 
-		public (IEnumerable<DeviceFailureHistoryDto> maintainRecords, MetaData metaData) GetAllAsync(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
+		public async Task<(IEnumerable<DeviceFailureHistoryDto> maintainRecords, MetaData metaData)> GetAllAsync(MaintainanceRequestParameters maintainanceRequestParameters, bool trackchanges)
 		{
-			var entitiesWithMeta = repository.MaintaninanceRepo.GetDeviceFailureHistories(maintainanceRequestParameters, trackchanges);
+			var entitiesWithMeta =  repository.MaintaninanceRepo.GetDeviceFailureHistories(maintainanceRequestParameters, trackchanges);
 			var entities = mapper.Map<IEnumerable<DeviceFailureHistoryDto>>(entitiesWithMeta);
-			return (maintainRecord: entities, metaData: entitiesWithMeta.metaData);
+			return (maintainRecords: entities, metaData: entitiesWithMeta.metaData);
 		}
 
-		public DeviceFailureHistoryDto? GetByIdAsync(int id)
+		public async Task<DeviceFailureHistoryDto?> GetByIdAsync(int id)
 		{
-			var entity = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, false);
+			var entity = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, false);
 			if (entity == null)
 				throw new DeviceFailureHistoryNotFoundException(id);
 			return mapper.Map<DeviceFailureHistoryDto>(entity);
 
 		}
 
-		public IEnumerable<DeviceFailureHistoryDto> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
+		public async Task<IEnumerable<DeviceFailureHistoryDto>> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
 		{
-			var entities = repository.MaintaninanceRepo.GetDeviceFailureHistoriesByDeviceId(deviceId, trackchanges);
+			var entities = await repository.MaintaninanceRepo.GetDeviceFailureHistoriesByDeviceId(deviceId, trackchanges);
 			
 			
 			return mapper.Map<IEnumerable<DeviceFailureHistoryDto>>(entities);
@@ -97,7 +97,7 @@ namespace Service
 		
         public async Task MakeDeviceDone(int MaintainId, string userId)
 		{
-			var maintain = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(MaintainId, trackchanges: true);
+			var maintain = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(MaintainId, trackchanges: true);
 			
 			if (maintain == null)
 				throw new DeviceFailureHistoryNotFoundException(MaintainId);
@@ -121,7 +121,7 @@ namespace Service
 
 
                 maintain.IsDelivered = true;
-			var d = repository.DeviceRepo.GetById(maintain.DeviceId, true);
+			var d =  await repository.DeviceRepo.GetById(maintain.DeviceId, true);
 			if (d == null)
 			{
 				throw new DeviceNotFoundException(maintain.DeviceId);
@@ -132,7 +132,7 @@ namespace Service
 		}
 		public async Task UpdateMaintainanceRecord(DeviceFailureHistoryDto dto,string userId)
 		{
-			var entity = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(dto.Id, true);
+			var entity = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(dto.Id, true);
 			if (entity == null)
 				throw new DeviceFailureHistoryNotFoundException(dto.Id);
 			if(entity.IsDelivered)
@@ -154,9 +154,9 @@ namespace Service
 			entity.LastModifiedUserId = userId;
             await repository.SaveAsync();
 		}
-		public (DeviceFailureHistoryDto dto, DeviceFailureHistory entity) GetDeviceFailureHistoryByIdForPartialUpdate(int id, bool trackchanges)
+		public async Task<(DeviceFailureHistoryDto dto, DeviceFailureHistory entity)> GetDeviceFailureHistoryByIdForPartialUpdate(int id, bool trackchanges)
 		{
-			var entity = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, trackchanges);
+			var entity = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(id, trackchanges);
 			if (entity == null)
 				throw new DeviceFailureHistoryNotFoundException(id);
 			if(entity.IsDelivered)
@@ -185,7 +185,7 @@ namespace Service
       
         public async Task ChangeFailureStatus(int MaintainId, int FailureId, FailureActionDone status)
         {
-            var maintain = repository.FailureMaintainRepo.GetFailureMaintain(MaintainId, FailureId, true);
+            var maintain =  await repository.FailureMaintainRepo.GetFailureMaintain(MaintainId, FailureId, true);
             if (maintain == null) throw new FailureMaintainNotFoundException(MaintainId, FailureId);
             maintain.FailureActionDone = status;
             await repository.SaveAsync();
@@ -193,7 +193,7 @@ namespace Service
 
         public async Task DeleteMaintain(int MaintainId, string userId)
         {
-            var maintain = repository.MaintaninanceRepo.GetDeviceFailureHistoryById(MaintainId, true);
+            var maintain = await repository.MaintaninanceRepo.GetDeviceFailureHistoryById(MaintainId, true);
             if (maintain == null)
                 throw new DeviceFailureHistoryNotFoundException(MaintainId);
             if (!maintain.IsDelivered)

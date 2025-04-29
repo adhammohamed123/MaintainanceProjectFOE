@@ -6,6 +6,7 @@ using Core.Entities.ErrorModel;
 using Core.Entities;
 using Service.DTOs;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentaion
 {
@@ -23,22 +24,22 @@ namespace Presentaion
       
 
         [HttpGet]
-        public IActionResult GetAll(int regionId, int gateId)
+        public  async Task<IActionResult> GetAll(int regionId, int gateId)
         {
-            var data = service.DepartmentService.GetAllDepartments(regionId, gateId, false).ToList();
-            var resposne = new ResponseShape<DepartmentDto>(StatusCodes.Status200OK,"ok",default, data);
+            var data = await service.DepartmentService.GetAllDepartments(regionId, gateId, false);
+            var resposne = new ResponseShape<DepartmentDto>(StatusCodes.Status200OK,"ok",default, data.ToList());
             return Ok(resposne);
         }
         [HttpGet("{deptId}",Name ="GetDept")]
-        public IActionResult GetDepartment(int regionId, int gateId,int deptId)
+        public async Task<IActionResult> GetDepartment(int regionId, int gateId,int deptId)
         {
-            var data = service.DepartmentService.GetDept(regionId,gateId,deptId, trakchanages: false);
+            var data = await service.DepartmentService.GetDept(regionId,gateId,deptId, trakchanages: false);
             var response = new ResponseShape<DepartmentDto>(StatusCodes.Status200OK, "ok", default, new List<DepartmentDto> { data });
             return Ok(response);
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(int regionId, int gateId, [FromBody] string deptName)
+        public async Task<IActionResult> Create(int regionId, int gateId, [FromBody][MaxLength(50, ErrorMessage = "اسم الادارة يجب ان لا يتعدي ال 50 حرف")] string deptName)
         {
             var result = await service.DepartmentService.CreateNewDepartment(regionId, gateId, deptName, trackchanges: false);
             var response = new ResponseShape<DepartmentDto>(StatusCodes.Status201Created, "تم اضافة الاداره بنجاح", default, new List<DepartmentDto>() { result });

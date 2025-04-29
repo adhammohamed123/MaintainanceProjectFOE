@@ -1,5 +1,6 @@
 ﻿using Core.RepositoryContracts;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -15,10 +16,10 @@ namespace Repository
         public void DeleteSpecialization(Specialization specialization)
         => SoftDelete(specialization);
 
-        public IQueryable<Specialization> GetAllSpecializations(bool trackchanges)
-        => FindAll(trackchanges);
+        public async Task<IEnumerable<Specialization>> GetAllSpecializations(bool trackchanges)
+        => await FindAll(trackchanges).ToListAsync();
 
-        public Specialization? GetSpecializationById(int id, bool trackchanges)
-        => FindByCondition(x => x.Id == id, trackchanges).SingleOrDefault();
+        public async Task<Specialization?> GetSpecializationById(int id, bool trackchanges)
+        => await FindByCondition(x => x.Id == id, trackchanges).SingleOrDefaultAsync();
     }
 }

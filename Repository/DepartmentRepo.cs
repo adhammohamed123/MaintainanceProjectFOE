@@ -1,5 +1,6 @@
 ﻿using Core.RepositoryContracts;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -24,10 +25,10 @@ namespace Repository
         public void DeleteDepartment(Department department)
         => SoftDelete(department);
 
-		public IQueryable<Department> GetAll(int gateId, bool trackchanges)
-        => FindByCondition(d => d.GateId.Equals(gateId) , trackchanges);
+		public async Task<IEnumerable<Department>> GetAll(int gateId, bool trackchanges)
+        => await FindByCondition(d => d.GateId.Equals(gateId) , trackchanges).ToListAsync();
 
-        public Department GetDeptBasedOnId( int gateId, int deptId, bool trackchanges)
-        => FindByCondition(d => d.Id.Equals(deptId) && d.GateId.Equals(gateId), trackchanges).SingleOrDefault();
+        public async Task<Department> GetDeptBasedOnId( int gateId, int deptId, bool trackchanges)
+        => await FindByCondition(d => d.Id.Equals(deptId) && d.GateId.Equals(gateId), trackchanges).SingleOrDefaultAsync();
     }
 }

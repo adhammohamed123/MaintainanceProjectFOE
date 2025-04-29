@@ -5,9 +5,10 @@ namespace Service.Services
 {
     public interface IUserService
     {
-		IQueryable<User> GetAllUser(bool trackchanges);
-        IQueryable<UserDto>GetAllUsersNamesAndIds(bool trackchanges);
-        User? GetFromUserById(string id, bool trackchanges);
+		Task<IEnumerable<User>> GetAllUser(bool trackchanges);
+
+        Task<IEnumerable<UserDto>>GetAllUsersNamesAndIds(bool trackchanges);
+        Task<User?> GetFromUserById(string id, bool trackchanges);
 		//Task<NameWithIdentifierDto> CreateUser(string name);
         Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration);
         Task<bool> ValidateUser(UserForAuthenticationDto userForAuth);

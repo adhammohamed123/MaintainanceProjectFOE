@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Core.Entities.ErrorModel;
 using Service.DTOs;
 using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentaion
 {
@@ -22,10 +23,10 @@ namespace Presentaion
         }
 
         [HttpGet()]
-        public IActionResult GetAll(int regionId)
+        public async Task<IActionResult> GetAll(int regionId)
         {
-            var data = service.GateService.GetAllGates(regionId, false).ToList();
-            var response = new ResponseShape<GateDto>(StatusCodes.Status200OK, "ok", default, data);
+            var data = await service.GateService.GetAllGates(regionId, false);
+            var response = new ResponseShape<GateDto>(StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
         }
         //[HttpGet("/api/gates")]
@@ -36,15 +37,15 @@ namespace Presentaion
         //    return Ok(data);
         //}
         [HttpGet("{gateId}", Name ="GetGateBasedOnRegionId")]
-        public IActionResult GetOne(int regionId, int gateId)
+        public async Task< IActionResult> GetOne(int regionId, int gateId)
         {
-           var data=  service.GateService.GetSpecificGate(regionId, gateId, false);
+           var data= await  service.GateService.GetSpecificGate(regionId, gateId, false);
             var response=new ResponseShape<GateDto>(StatusCodes.Status200OK, "ok", default, new List<GateDto> { data });
             return Ok(response);
         }
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateNewGate(int regionId,[FromBody]string gateName)
+        public async Task<IActionResult> CreateNewGate(int regionId,[FromBody][MaxLength(50, ErrorMessage = "اسم البوابة يجب ان لا يتعدي ال 50 حرف")] string gateName)
         {
             var gate = await service.GateService.CreateNewGateInRegion(regionId, gateName,false);
             var response = new ResponseShape<GateDto>(StatusCodes.Status201Created, "تم اضافة البوابه بنجاح", default, new List<GateDto>() { gate });

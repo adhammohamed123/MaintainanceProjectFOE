@@ -96,8 +96,8 @@ builder.Services.AddSwaggerGen(s =>
 {
     options.HttpsPort = 7193;
 });*/
-//builder.WebHost.UseUrls("http://*:9990");
-builder.WebHost.UseUrls("http://0.0.0.0:9990");
+builder.WebHost.UseUrls("http://*:9990","http://0.0.0.0:9990");
+//builder.WebHost.UseUrls("http://0.0.0.0:9990");
 var app = builder.Build();
 
 app.HandleExceptions();

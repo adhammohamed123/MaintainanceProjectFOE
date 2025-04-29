@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Service.DTOs;
 using Service.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentaion
 {
@@ -23,24 +24,24 @@ namespace Presentaion
         }
 
         [HttpGet]
-        public IActionResult GetAlls()
+        public async Task<IActionResult> GetAlls()
         {
-            var data = service.RegionService.GetAllRegisteredRegion(trackchanges: false).ToList();
-            var response = new ResponseShape<RegionDto>(StatusCode:StatusCodes.Status200OK, "ok", default, data);
+            var data = await service.RegionService.GetAllRegisteredRegion(trackchanges: false);
+            var response = new ResponseShape<RegionDto>(StatusCode:StatusCodes.Status200OK, "ok", default, data.ToList());
             return Ok(response);
         }
 
         [HttpGet("{regionId}", Name ="GetRegionBasedOnId")]
-        public IActionResult GetRegion(int regionId)
+        public async Task<IActionResult> GetRegion(int regionId)
         {
-           var data=  service.RegionService.GetRegionByID(regionId, trackchanges: false);
+           var data= await service.RegionService.GetRegionByID(regionId, trackchanges: false);
             var response = new ResponseShape<RegionDto>(StatusCodes.Status200OK, "ok", default, new List<RegionDto> { data });
             return Ok(response);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] string name)
+        public async Task<IActionResult> Create([FromBody][MaxLength(50,ErrorMessage ="اسم القطاع يجب ان لا يتعدي ال 50 حرف")] string name)
         {
            var newRegion=  await service.RegionService.CreateNewRegionAsync(name);
             var response = new ResponseShape<RegionDto>(StatusCodes.Status201Created, "تم اضافة المنطقه بنجاح", default, new List<RegionDto>() { newRegion });

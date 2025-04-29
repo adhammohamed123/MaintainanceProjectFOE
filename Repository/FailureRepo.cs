@@ -1,5 +1,6 @@
 ﻿using Core.RepositoryContracts;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -16,8 +17,8 @@ namespace Repository
 
 		public void DeleteFailure(Failure failure) => SoftDelete(failure) ; 
 
-		public IQueryable<Failure> GetAllFailures(bool trackchanges)	=> FindAll(trackchanges);
+		public async Task<IEnumerable<Failure>> GetAllFailures(bool trackchanges)	=> await FindAll(trackchanges).ToListAsync();
 
-		public Failure GetById(int id, bool trackchanges)	=> FindByCondition(f => f.Id .Equals( id), trackchanges).SingleOrDefault();
+		public async Task<Failure?> GetById(int id, bool trackchanges) => await FindByCondition(f => f.Id.Equals(id), trackchanges).SingleOrDefaultAsync();
 	}
 }

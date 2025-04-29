@@ -25,10 +25,10 @@ namespace Repository
 		//=> FindByCondition(r => r.Id.Equals(regionId), trackchanges).SelectMany(r => r.Gates);
 
 
-		public IQueryable<Region> GetAllRegisteredRegion(bool trackchanges) => FindAll(trackchanges).OrderBy(e=>e.Name);
+		public async Task<IEnumerable<Region>> GetAllRegisteredRegion(bool trackchanges) => await FindAll(trackchanges).OrderBy(e=>e.Name).ToListAsync();
 
-        public Region GetRegionBasedOnId(int id, bool trackchanges)
-        => FindByCondition(r => r.Id.Equals(id), trackchanges).SingleOrDefault();    
+        public async Task<Region> GetRegionBasedOnId(int id, bool trackchanges)
+        => await FindByCondition(r => r.Id.Equals(id), trackchanges).SingleOrDefaultAsync();    
             
             
     }

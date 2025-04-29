@@ -32,14 +32,14 @@ namespace Repository
                 ;
 			return PagedList<DeviceFailureHistory>.ToPagedList(items, maintainanceRequestParameters.PageNumber, maintainanceRequestParameters.PageSize);
 		}
-		public IQueryable<DeviceFailureHistory> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
-		=> FindByCondition(x => x.DeviceId == deviceId, trackchanges)
+		public async Task<IEnumerable<DeviceFailureHistory>> GetDeviceFailureHistoriesByDeviceId(int deviceId, bool trackchanges)
+		=> await FindByCondition(x => x.DeviceId == deviceId, trackchanges)
             .Include(h => h.Maintainer).Include(h => h.Receiver)
             .Include(h => h.FailureMaintains).ThenInclude(f=>f.Failure)
-			.OrderByDescending(d=>d.LastModifiedDate ?? d.CreatedDate);
+			.OrderByDescending(d=>d.LastModifiedDate ?? d.CreatedDate).ToListAsync();
 
-		public DeviceFailureHistory? GetDeviceFailureHistoryById(int id, bool trackchanges)
-		=> FindByCondition(x => x.Id == id, trackchanges).Include(h => h.FailureMaintains).ThenInclude(f=>f.Failure).SingleOrDefault();
+		public async Task<DeviceFailureHistory?> GetDeviceFailureHistoryById(int id, bool trackchanges)
+		=> await FindByCondition(x => x.Id == id, trackchanges).Include(h => h.FailureMaintains).ThenInclude(f=>f.Failure).SingleOrDefaultAsync();
 
 		public async Task RegisterNew(DeviceFailureHistory deviceFailureHistory)
 		=>await Create(deviceFailureHistory);
